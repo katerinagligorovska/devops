@@ -20,11 +20,11 @@ jobs:
       with:
         username: ${{secrets.DOCKERHUB_USERNAME}}
         password: ${{secrets.DOCKERHUB_TOKEN}}
-
+    - name: Test with the dotnet CLI
+      run: |
+        docker run  katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
         push: false
         tags: katerinagligorovska/bookstoreapp:${{github.sha}}
-    - name: Test with the dotnet CLI
-      run: docker run katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
