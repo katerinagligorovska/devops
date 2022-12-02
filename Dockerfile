@@ -17,6 +17,10 @@ COPY . .
 WORKDIR "/src/BookStore.Web"
 RUN dotnet build "BookStore.Web.csproj" -c Release -o /app/build
 
+FROM build AS test
+WORKDIR "/src/BookStore.Test"
+RUN dotnet test "BookStore.Test.csproj" -c Release --no-build --no-restore
+
 FROM build AS publish
 RUN dotnet publish "BookStore.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 

@@ -1,8 +1,8 @@
 name: Docker Build and Push to DockerHub
 
 on:
-  # push:
-  #   branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -24,5 +24,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        push: true
+        push: false
         tags: katerinagligorovska/bookstoreapp:${{github.sha}}
+    - name: Test with the dotnet CLI
+      run: docker run katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
