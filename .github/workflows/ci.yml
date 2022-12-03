@@ -1,8 +1,8 @@
 name: Docker Build and Push to DockerHub
 
 on:
-  # push:
-  #   branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -20,11 +20,20 @@ jobs:
       with:
         username: ${{secrets.DOCKERHUB_USERNAME}}
         password: ${{secrets.DOCKERHUB_TOKEN}}
-    - name: Test with the dotnet CLI
-      run: |
-        docker run  katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
-    - name: Build and push
+
+    - name: Build test stage
       uses: docker/build-push-action@v3
       with:
         push: false
+        target: test
         tags: katerinagligorovska/bookstoreapp:${{github.sha}}
+
+    - name: Run test stage
+      run: |
+        docker run katerinagligorovska/bookstoreapp:${{github.sha}}
+
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: katerinagligorovska/bookstoreapp:latest
