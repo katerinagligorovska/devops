@@ -21,11 +21,26 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+    depends_on:
+      - db
     volumes:
        - pgadmin:/var/lib/pgadmin
-
     ports:
       - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bookstore:dev
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      DSN: User ID=postgres;Password=changeme;Host=db;Port=5432;Database=bookstoredb;Pooling=true;
     networks:
       - postgres
 

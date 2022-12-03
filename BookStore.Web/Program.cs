@@ -8,10 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var dbConnStr = Environment.GetEnvironmentVariable("DSN");
+if (dbConnStr == null || dbConnStr == "")
+{
+    dbConnStr = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseNpgsql(dbConnStr));
 
 builder.Services.AddIdentity<EShopAppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
