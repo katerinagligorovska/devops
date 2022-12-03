@@ -84,40 +84,36 @@ public class ApplicationDbContext : IdentityDbContext<EShopAppUser>
         });
 
         // sett admin user
-        var appUser = new EShopAppUser
-        {
-            Email = "admin@test.com",
-            NormalizedEmail = "ADMIN@TEST.COM",
-            EmailConfirmed = true,
-            UserName = "admin@test.com",
-            NormalizedUserName = "ADMIN@TEST.COM",
-            PhoneNumberConfirmed = true,
-            FirstName = "Admin",
-            LastName = "Admin",
-
-
-        };
+        //var appUser = new EShopAppUser
+        //{
+        //    Email = "admin@test.com",
+        //    NormalizedEmail = "ADMIN@TEST.COM",
+        //    EmailConfirmed = true,
+        //    UserName = "admin@test.com",
+        //    NormalizedUserName = "ADMIN@TEST.COM",
+        //    PhoneNumberConfirmed = true,
+        //};
         //set user password
-        PasswordHasher<EShopAppUser> ph = new PasswordHasher<EShopAppUser>();
-        appUser.PasswordHash = ph.HashPassword(appUser, "Pass123!");
+        //PasswordHasher<EShopAppUser> ph = new PasswordHasher<EShopAppUser>();
+        //appUser.PasswordHash = ph.HashPassword(appUser, "Pass123!");
 
         //seed user
-        builder.Entity<EShopAppUser>().HasData(appUser);
+        //builder.Entity<EShopAppUser>().HasData(appUser);
 
-        // shopping cart for admin user
-        var shoppingCart = new ShoppingCart()
-        {
-            Id = Guid.NewGuid(),
-            OwnerId = appUser.Id
-        };
-        builder.Entity<ShoppingCart>().HasData(shoppingCart);
+        //// shopping cart for admin user
+        //var shoppingCart = new ShoppingCart()
+        //{
+        //    Id = Guid.NewGuid(),
+        //    OwnerId = appUser.Id
+        //};
+        //builder.Entity<ShoppingCart>().HasData(shoppingCart);
 
         //set user role to admin
-        builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-        {
-            RoleId = "1",
-            UserId = appUser.Id
-        });
+        //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+        //{
+        //    RoleId = "1",
+        //    UserId = appUser.Id
+        //});
     }
 
 }
