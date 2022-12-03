@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Domain.Entity
 {
-    public class BookInOrder
+    public class BookInOrder :BaseEntity
     {
         public Guid BookId { get; set; }
         public Book Book { get; set; }
