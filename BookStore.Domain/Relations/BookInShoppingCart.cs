@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Domain.Relations
 {
-    public class BookInShoppingCart
+    public class BookInShoppingCart :BaseEntity
     {
         public Guid BookId { get; set; }
         public virtual Book CurrnetBook { get; set; }
