@@ -25,7 +25,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: false
-        target: test
+        target: build
         tags: katerinagligorovska/bookstoreapp:${{github.sha}}
 
     - name: Run test stage
