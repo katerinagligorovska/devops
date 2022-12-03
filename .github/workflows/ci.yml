@@ -33,7 +33,7 @@ jobs:
     - uses: addnab/docker-run-action@v3
       with:
         image: katerinagligorovska/bookstoreapp:${{github.sha}}
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test -c Release --no-build --no-restore --verbosity normal
 
     - name: Build and push
       uses: docker/build-push-action@v3
