@@ -30,7 +30,7 @@ jobs:
 
     - name: Run test stage
       run: |
-        docker run -it katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
+        docker run katerinagligorovska/bookstoreapp:${{github.sha}} dotnet test
 
     - name: Build and push
       uses: docker/build-push-action@v3
