@@ -82,7 +82,7 @@ public class ApplicationDbContext : IdentityDbContext<EShopAppUser>
             Name = "Standard_User",
             NormalizedName = "STANDARD_USER"
         });
-
+        
         // sett admin user
         //var appUser = new EShopAppUser
         //{

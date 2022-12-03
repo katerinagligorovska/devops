@@ -46,6 +46,8 @@ namespace BookStore.Web.Controllers
                         Email = request.Email,
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
+                        FirstName = request.Name,
+                        LastName = request.LastName,
                         UserCart = new ShoppingCart()
                     };
 
