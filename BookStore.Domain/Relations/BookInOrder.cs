@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BookStore.Domain.Entity;
 
-namespace BookStore.Domain.Entity
+namespace BookStore.Domain.Relations
 {
-    public class BookInOrder :BaseEntity
+    public class BookInOrder : BaseEntity
     {
         public Guid BookId { get; set; }
         public Book Book { get; set; }
