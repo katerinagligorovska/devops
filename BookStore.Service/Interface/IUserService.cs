@@ -1,14 +1,9 @@
 ﻿using BookStore.Domain.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Service.Interface
 {
     public interface IUserService
     {
-        public List<EShopAppUser> GetAllUsers();
+        public IEnumerable<EShopAppUser> GetAllUsers();
     }
 }

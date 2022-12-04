@@ -1,60 +1,36 @@
 ﻿using BookStore.Domain.DTO;
 using BookStore.Domain.Entity;
-using BookStore.Domain.Relations;
 using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Service.Implementation
 {
     public class BookService : IBookService
     {
         private readonly IRepository<Book> _bookRepository;
-        private readonly IRepository<BookInShoppingCart> _bookInShoppingCartRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IRepository<ShoppingCart> _shoppingCartRepository;
 
-        public BookService(IRepository<Book> bookRepository, IRepository<BookInShoppingCart> bookInShoppingCartRepository, IUserRepository userRepository)
+        public BookService(IRepository<Book> bookRepository, IUserRepository userRepository, IRepository<ShoppingCart> shoppingCartRepository)
         {
             _bookRepository = bookRepository;
             _userRepository = userRepository;
-            _bookInShoppingCartRepository = bookInShoppingCartRepository;
+            _shoppingCartRepository = shoppingCartRepository;
         }
 
 
         public bool AddToShoppingCart(AddToShoppingCartDto item, string userID)
         {
             var user = this._userRepository.Get(userID);
-
-            var userShoppingCard = user.UserCart;
-
-            if (item.SelectedBookId != null && userShoppingCard != null)
+            var cart = user.Cart ?? new ShoppingCart();
+            cart.Owner = user;
+            var book = this.GetDetailsForBook(item.SelectedBookId);
+            for (int i = 0; i < item.Quantity; i++)
             {
-                var book = this.GetDetailsForBook(item.SelectedBookId);
-
-                if (book != null)
-                {
-                    BookInShoppingCart itemToAdd = new BookInShoppingCart
-                    {
-                        Id = Guid.NewGuid(),
-                        CurrnetBook = book,
-                        BookId = book.Id,
-                        UserCart = userShoppingCard,
-                        ShoppingCartId = userShoppingCard.Id,
-                        Quantity = item.Quantity
-                    };
-
-                    this._bookInShoppingCartRepository.Insert(itemToAdd);
-                    userShoppingCard.BookInShoppingCarts.Add(itemToAdd);
-                    _userRepository.Update(user);
-                    return true;
-                }
-                return false;
+                cart.Books.Add(book);
             }
-            return false;
+            _shoppingCartRepository.Update(cart);
+            return true;
         }
 
         public void CreateNewBook(Book p)
@@ -69,7 +45,6 @@ namespace BookStore.Service.Implementation
         }
         public List<Book> GetAllBooksGenre(string genre)
         {
-
             return this._bookRepository.GetAll().Where(book => book.Genre.Equals(genre)).ToList();
         }
 
@@ -84,15 +59,15 @@ namespace BookStore.Service.Implementation
             return this._bookRepository.GetAll().ToList();
         }
 
-        public Book GetDetailsForBook(Guid? id)
+        public Book GetDetailsForBook(Guid id)
         {
             return this._bookRepository.Get(id);
         }
 
-        public AddToShoppingCartDto GetShoppingCartInfo(Guid? id)
+        public AddToShoppingCartDto GetShoppingCartInfo(Guid id)
         {
             var book = this.GetDetailsForBook(id);
-            AddToShoppingCartDto model = new AddToShoppingCartDto
+            var model = new AddToShoppingCartDto
             {
                 SelectedBook = book,
                 SelectedBookId = book.Id,

@@ -1,12 +1,7 @@
-﻿using BookStore.Domain.DTO;
-using BookStore.Domain.Entity;
+﻿using BookStore.Domain.Entity;
 using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Service.Implementation
 {
@@ -15,140 +10,86 @@ namespace BookStore.Service.Implementation
         private readonly IRepository<ShoppingCart> _shoppingCartRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<EmailMessage> _mailRepository;
-        private readonly IRepository<BookInOrder> _bookInOrderRepository;
         private readonly IUserRepository _userRepository;
 
-        public ShoppingCartService(IRepository<ShoppingCart> shoppingCartRepository, IUserRepository userRepository, IRepository<EmailMessage> mailRepository, IRepository<Order> orderRepository, IRepository<BookInOrder> bookInOrderRepository)
+        public ShoppingCartService(IRepository<ShoppingCart> shoppingCartRepository, IUserRepository userRepository, IRepository<EmailMessage> mailRepository, IRepository<Order> orderRepository)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
-            _bookInOrderRepository = bookInOrderRepository;
             _mailRepository = mailRepository;
         }
 
 
-        public bool deleteBookFromSoppingCart(string userId, Guid productId)
+        public bool DeleteBookFromShoppingCart(string userId, Guid productId)
         {
-            if (!string.IsNullOrEmpty(userId) && productId != null)
+            if (string.IsNullOrEmpty(userId))
             {
-                var loggedInUser = this._userRepository.Get(userId);
-
-                var userShoppingCart = loggedInUser.UserCart;
-
-                var itemToDelete = userShoppingCart.BookInShoppingCarts.Where(z => z.BookId.Equals(productId)).FirstOrDefault();
-
-                userShoppingCart.BookInShoppingCarts.Remove(itemToDelete);
-
-                this._shoppingCartRepository.Update(userShoppingCart);
-
-                return true;
+                return false;
             }
-            return false;
+
+            var user = this._userRepository.Get(userId);
+            var shoppingCart = user.Cart;
+            var deleted = shoppingCart.Books.Where(z => z.Id.Equals(productId)).First();
+            shoppingCart.Books.Remove(deleted);
+            this._shoppingCartRepository.Update(shoppingCart);
+            return true;
         }
 
-        public ShoppingCartDto getShoppingCartInfo(string userId)
+        public ShoppingCart GetShoppingCartInfo(string userId)
         {
-            if (!string.IsNullOrEmpty(userId))
-            {
-                var loggedInUser = this._userRepository.Get(userId);
-
-                var userCard = loggedInUser.UserCart;
-
-                var allProducts = userCard.BookInShoppingCarts.ToList();
-
-                var allProductPrices = allProducts.Select(z => new
-                {
-                    ProductPrice = z.CurrnetBook.Price,
-                    Quantity = z.Quantity
-                }).ToList();
-
-                double totalPrice = 0.0;
-
-                foreach (var item in allProductPrices)
-                {
-                    totalPrice += item.Quantity * item.ProductPrice;
-                }
-
-                var reuslt = new ShoppingCartDto
-                {
-                    Books = allProducts,
-                    TotalPrice = totalPrice
-                };
-
-                return reuslt;
-            }
-            return new ShoppingCartDto();
+            var user = this._userRepository.Get(userId);
+            return user.Cart;
         }
 
-        public bool order(string userId)
+        public bool CanCreateOrder(string userId)
         {
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
-                var loggedInUser = this._userRepository.Get(userId);
-                var userCard = loggedInUser.UserCart;
-
-                EmailMessage mail = new EmailMessage();
-                mail.MailTo = loggedInUser.Email;
-                mail.Subject = "Sucessfuly created order!";
-                mail.Status = false;
-
-
-                Order order = new Order
-                {
-                    Id = Guid.NewGuid(),
-                    User = loggedInUser,
-                    UserId = userId
-                };
-
-                this._orderRepository.Insert(order);
-
-                List<BookInOrder> productInOrders = new List<BookInOrder>();
-
-                var result = userCard.BookInShoppingCarts.Select(z => new BookInOrder
-                {
-                    Id = Guid.NewGuid(),
-                    BookId = z.CurrnetBook.Id,
-                    Book = z.CurrnetBook,
-                    OrderId = order.Id,
-                    UserOrder = order,
-                    Quantity = z.Quantity
-                }).ToList();
-
-                StringBuilder sb = new StringBuilder();
-
-                var totalPrice = 0.0;
-
-                sb.AppendLine("Your order is completed. The order conatins: ");
-
-                for (int i = 1; i <= result.Count(); i++)
-                {
-                    var currentItem = result[i - 1];
-                    totalPrice += currentItem.Quantity * currentItem.Book.Price;
-                    sb.AppendLine(i.ToString() + ". " + currentItem.Book.BookName + " with quantity of: " + currentItem.Quantity + " and price of: $" + currentItem.Book.Price);
-                }
-
-                sb.AppendLine("Total price for your order: " + totalPrice.ToString());
-
-                mail.Content = sb.ToString();
-
-
-                productInOrders.AddRange(result);
-
-                foreach (var item in productInOrders)
-                {
-                    this._bookInOrderRepository.Insert(item);
-                }
-
-                loggedInUser.UserCart.BookInShoppingCarts.Clear();
-
-                this._userRepository.Update(loggedInUser);
-                this._mailRepository.Insert(mail);
-
-                return true;
+                return false;
             }
 
-            return false;
+            var loggedInUser = this._userRepository.Get(userId);
+            var userCart = loggedInUser.Cart;
+            var order = new Order
+            {
+                Id = Guid.NewGuid(),
+                User = loggedInUser,
+                UserId = userId,
+                Books = new List<Book>()
+            };
+
+            foreach (var book in userCart.Books)
+            {
+                order.Books.Add(book);
+            }
+            this._orderRepository.Insert(order);
+            loggedInUser.Cart.Books.Clear();
+            this._userRepository.Update(loggedInUser);
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Your order is completed. The order conatins: ");
+
+            var booksCounts = order.Books.GroupBy(x => x.Id).Select(x => new { BookId = x.Key, Count = x.Count() });
+            for (int i = 0; i < booksCounts.Count(); i++)
+            {
+                var element = booksCounts.ElementAt(i);
+                var bookId = element.BookId;
+                var book = order.Books.Where(x => x.Id.Equals(bookId)).First();
+                sb.AppendLine($"{i}. {element.Count} x {book.BookName} - {book.Price} $");
+            }
+
+            var total = order.Books.Aggregate(0.0, (acc, book) => acc + (book.Price));
+            sb.AppendLine($"Total price for your order: {total}");
+
+            var mail = new EmailMessage();
+            mail.MailTo = loggedInUser.Email;
+            mail.Subject = "Sucessfuly created order!";
+            mail.Status = false;
+            mail.Content = sb.ToString();
+
+            this._mailRepository.Insert(mail);
+            return true;
         }
     }
 }
