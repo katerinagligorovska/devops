@@ -1,11 +1,6 @@
 ﻿using BookStore.Domain.Identity;
 using BookStore.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Repository.Implementation
 {
@@ -13,25 +8,25 @@ namespace BookStore.Repository.Implementation
     {
         private readonly ApplicationDbContext context;
         private DbSet<EShopAppUser> entities;
-        string errorMessage = string.Empty;
 
         public UserRepository(ApplicationDbContext context)
         {
             this.context = context;
             entities = context.Set<EShopAppUser>();
         }
+
         public IEnumerable<EShopAppUser> GetAll()
         {
-            return entities.AsEnumerable();
+            return entities
+                .Include(z => z.Cart)
+                .ToList();
         }
 
         public EShopAppUser Get(string id)
         {
             return entities
-               .Include(z => z.UserCart)
-               .Include("UserCart.BookInShoppingCarts")
-               .Include("UserCart.BookInShoppingCarts.CurrnetBook")
-               .SingleOrDefault(s => s.Id == id);
+               .Include(z => z.Cart)
+               .Single(s => s.Id == id.ToString());
         }
         public void Insert(
             EShopAppUser entity)

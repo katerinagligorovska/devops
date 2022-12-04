@@ -44,36 +44,22 @@ namespace BookStore.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("BookStore.Domain.Entity.BookInOrder", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid?>("ShoppingCartId")
                         .HasColumnType("uuid");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookId");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("BookInOrder");
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.EmailMessage", b =>
@@ -116,7 +102,7 @@ namespace BookStore.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.ShoppingCart", b =>
@@ -139,8 +125,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("62098c67-a750-45a9-b76b-a96bb70120e5"),
-                            OwnerId = "b02e3835-800f-4a4e-af69-fbcc5e91b8ba"
+                            Id = new Guid("dea75369-1f74-4569-afdd-3bbda25b8291"),
+                            OwnerId = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b"
                         });
                 });
 
@@ -218,9 +204,9 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b02e3835-800f-4a4e-af69-fbcc5e91b8ba",
+                            Id = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b4a224d3-a00b-4fea-95b5-73c41ed480de",
+                            ConcurrencyStamp = "df78b882-298a-4277-b9bd-050783ac3ada",
                             Email = "admin@test.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -228,26 +214,56 @@ namespace BookStore.Repository.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGO5eu+vlV+SkygXmOPvpKhrN0KfJBOi5rtCRKfSgVVtw/5VM9j+klcmMMAPt0K6rg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK327TXHGrVXg5rqcDcfF7y9RNn/URGSsu/TtsusB5pE+BOLg3gPrBNC7WRTpzjF1Q==",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "a3e74c45-0d57-46a9-ba8b-cceb9a0955ee",
+                            SecurityStamp = "0f60b11e-cd4d-4e3b-b6bb-70fa5b00b182",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         });
                 });
 
-            modelBuilder.Entity("BookStore.Domain.Relations.BookInShoppingCart", b =>
+            modelBuilder.Entity("BookStore.Domain.Relations.BookInOrder", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("BookId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ShoppingCartId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("BookId", "ShoppingCartId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("BookInOrder");
+                });
+
+            modelBuilder.Entity("BookStore.Domain.Relations.BookInShoppingCart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ShoppingCartId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
 
                     b.HasIndex("ShoppingCartId");
 
@@ -282,17 +298,17 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
-                            ConcurrencyStamp = "5b2a7c11-1b94-4127-8e99-12ab7b7b52ed",
+                            Id = "42124893-15f9-469e-ae10-947c16eda57f",
+                            ConcurrencyStamp = "dd3e836d-12e9-4c1a-b193-3e27bcaaaa43",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2",
-                            ConcurrencyStamp = "08a0ef43-cede-46b5-a4c9-7021ad52d7ac",
-                            Name = "Standard_User",
-                            NormalizedName = "STANDARD_USER"
+                            Id = "6b0216e3-c180-4fe5-9310-60f1ad66131f",
+                            ConcurrencyStamp = "7df1b74e-83cf-468d-be51-69770ca17e27",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -385,8 +401,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "b02e3835-800f-4a4e-af69-fbcc5e91b8ba",
-                            RoleId = "1"
+                            UserId = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b",
+                            RoleId = "42124893-15f9-469e-ae10-947c16eda57f"
                         });
                 });
 
@@ -409,23 +425,15 @@ namespace BookStore.Repository.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BookStore.Domain.Entity.BookInOrder", b =>
+            modelBuilder.Entity("BookStore.Domain.Entity.Book", b =>
                 {
-                    b.HasOne("BookStore.Domain.Entity.Book", "Book")
-                        .WithMany("BookInOrders")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("BookStore.Domain.Entity.Order", null)
+                        .WithMany("Books")
+                        .HasForeignKey("OrderId");
 
-                    b.HasOne("BookStore.Domain.Entity.Order", "UserOrder")
-                        .WithMany("BookInOrders")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("UserOrder");
+                    b.HasOne("BookStore.Domain.Entity.ShoppingCart", null)
+                        .WithMany("Books")
+                        .HasForeignKey("ShoppingCartId");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.Order", b =>
@@ -442,7 +450,7 @@ namespace BookStore.Repository.Migrations
             modelBuilder.Entity("BookStore.Domain.Entity.ShoppingCart", b =>
                 {
                     b.HasOne("BookStore.Domain.Identity.EShopAppUser", "Owner")
-                        .WithOne("UserCart")
+                        .WithOne("Cart")
                         .HasForeignKey("BookStore.Domain.Entity.ShoppingCart", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -450,23 +458,42 @@ namespace BookStore.Repository.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("BookStore.Domain.Relations.BookInOrder", b =>
+                {
+                    b.HasOne("BookStore.Domain.Entity.Book", "Book")
+                        .WithMany("BookInOrders")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Domain.Entity.Order", "UserOrder")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("UserOrder");
+                });
+
             modelBuilder.Entity("BookStore.Domain.Relations.BookInShoppingCart", b =>
                 {
-                    b.HasOne("BookStore.Domain.Entity.ShoppingCart", "UserCart")
+                    b.HasOne("BookStore.Domain.Entity.Book", "CurrentBook")
                         .WithMany("BookInShoppingCarts")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookStore.Domain.Entity.Book", "CurrnetBook")
-                        .WithMany("BookInShoppingCarts")
+                    b.HasOne("BookStore.Domain.Entity.ShoppingCart", "Cart")
+                        .WithMany()
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CurrnetBook");
+                    b.Navigation("Cart");
 
-                    b.Navigation("UserCart");
+                    b.Navigation("CurrentBook");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -529,17 +556,17 @@ namespace BookStore.Repository.Migrations
 
             modelBuilder.Entity("BookStore.Domain.Entity.Order", b =>
                 {
-                    b.Navigation("BookInOrders");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.ShoppingCart", b =>
                 {
-                    b.Navigation("BookInShoppingCarts");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Identity.EShopAppUser", b =>
                 {
-                    b.Navigation("UserCart")
+                    b.Navigation("Cart")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

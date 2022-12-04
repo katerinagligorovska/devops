@@ -1,19 +1,13 @@
 ﻿using BookStore.Domain;
 using BookStore.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Repository.Implementation
 {
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext context;
-        private DbSet<T> entities;
-        string errorMessage = string.Empty;
+        private readonly DbSet<T> entities;
 
         public Repository(ApplicationDbContext context)
         {
@@ -22,12 +16,12 @@ namespace BookStore.Repository.Implementation
         }
         public IEnumerable<T> GetAll()
         {
-            return entities.AsEnumerable();
+            return entities.ToList();
         }
 
-        public T Get(Guid? id)
+        public T Get(Guid id)
         {
-            return entities.SingleOrDefault(s => s.Id == id);
+            return entities.Single(s => s.Id == id);
         }
         public void Insert(T entity)
         {

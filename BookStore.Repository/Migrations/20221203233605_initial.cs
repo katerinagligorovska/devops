@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BookStore.Repository.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,22 +49,6 @@ namespace BookStore.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Books",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    BookName = table.Column<string>(type: "text", nullable: false),
-                    BookImage = table.Column<string>(type: "text", nullable: false),
-                    BookDescription = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<int>(type: "integer", nullable: false),
-                    Genre = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Books", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,7 +173,7 @@ namespace BookStore.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -197,9 +181,9 @@ namespace BookStore.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_UserId",
+                        name: "FK_Orders_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -225,6 +209,34 @@ namespace BookStore.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BookName = table.Column<string>(type: "text", nullable: false),
+                    BookImage = table.Column<string>(type: "text", nullable: false),
+                    BookDescription = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    Genre = table.Column<string>(type: "text", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Books_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Books_ShoppingCarts_ShoppingCartId",
+                        column: x => x.ShoppingCartId,
+                        principalTable: "ShoppingCarts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BookInOrder",
                 columns: table => new
                 {
@@ -243,9 +255,9 @@ namespace BookStore.Repository.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookInOrder_Order_OrderId",
+                        name: "FK_BookInOrder_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Order",
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -254,22 +266,23 @@ namespace BookStore.Repository.Migrations
                 name: "BookInShoppingCarts",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     BookId = table.Column<Guid>(type: "uuid", nullable: false),
                     ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookInShoppingCarts", x => new { x.BookId, x.ShoppingCartId });
+                    table.PrimaryKey("PK_BookInShoppingCarts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookInShoppingCarts_Books_ShoppingCartId",
-                        column: x => x.ShoppingCartId,
+                        name: "FK_BookInShoppingCarts_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookInShoppingCarts_ShoppingCarts_BookId",
-                        column: x => x.BookId,
+                        name: "FK_BookInShoppingCarts_ShoppingCarts_ShoppingCartId",
+                        column: x => x.ShoppingCartId,
                         principalTable: "ShoppingCarts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -280,24 +293,24 @@ namespace BookStore.Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "5b2a7c11-1b94-4127-8e99-12ab7b7b52ed", "Admin", "ADMIN" },
-                    { "2", "08a0ef43-cede-46b5-a4c9-7021ad52d7ac", "Standard_User", "STANDARD_USER" }
+                    { "42124893-15f9-469e-ae10-947c16eda57f", "dd3e836d-12e9-4c1a-b193-3e27bcaaaa43", "Admin", "ADMIN" },
+                    { "6b0216e3-c180-4fe5-9310-60f1ad66131f", "7df1b74e-83cf-468d-be51-69770ca17e27", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "b02e3835-800f-4a4e-af69-fbcc5e91b8ba", 0, "b4a224d3-a00b-4fea-95b5-73c41ed480de", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEGO5eu+vlV+SkygXmOPvpKhrN0KfJBOi5rtCRKfSgVVtw/5VM9j+klcmMMAPt0K6rg==", null, true, "a3e74c45-0d57-46a9-ba8b-cceb9a0955ee", false, "admin@test.com" });
+                values: new object[] { "38ab4f7c-d7c8-4b44-a44a-17e083cab72b", 0, "df78b882-298a-4277-b9bd-050783ac3ada", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEK327TXHGrVXg5rqcDcfF7y9RNn/URGSsu/TtsusB5pE+BOLg3gPrBNC7WRTpzjF1Q==", null, true, "0f60b11e-cd4d-4e3b-b6bb-70fa5b00b182", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "1", "b02e3835-800f-4a4e-af69-fbcc5e91b8ba" });
+                values: new object[] { "42124893-15f9-469e-ae10-947c16eda57f", "38ab4f7c-d7c8-4b44-a44a-17e083cab72b" });
 
             migrationBuilder.InsertData(
                 table: "ShoppingCarts",
                 columns: new[] { "Id", "OwnerId" },
-                values: new object[] { new Guid("62098c67-a750-45a9-b76b-a96bb70120e5"), "b02e3835-800f-4a4e-af69-fbcc5e91b8ba" });
+                values: new object[] { new Guid("dea75369-1f74-4569-afdd-3bbda25b8291"), "38ab4f7c-d7c8-4b44-a44a-17e083cab72b" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -347,13 +360,28 @@ namespace BookStore.Repository.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookInShoppingCarts_BookId",
+                table: "BookInShoppingCarts",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookInShoppingCarts_ShoppingCartId",
                 table: "BookInShoppingCarts",
                 column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_UserId",
-                table: "Order",
+                name: "IX_Books_OrderId",
+                table: "Books",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_ShoppingCartId",
+                table: "Books",
+                column: "ShoppingCartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -393,10 +421,10 @@ namespace BookStore.Repository.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCarts");

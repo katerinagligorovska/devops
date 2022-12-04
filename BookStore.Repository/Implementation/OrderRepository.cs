@@ -1,52 +1,40 @@
 ﻿using BookStore.Domain.Entity;
-using BookStore.Domain;
 using BookStore.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Repository.Implementation
 {
 
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : Repository<Order>, IOrderRepository
     {
-        private readonly ApplicationDbContext context;
         private DbSet<Order> entities;
-        string errorMessage = string.Empty;
 
-        public OrderRepository(ApplicationDbContext context)
+        public OrderRepository(ApplicationDbContext context) : base(context)
         {
-            this.context = context;
             entities = context.Set<Order>();
         }
-        public List<Order> getAllOrders()
+        public new List<Order> GetAll()
         {
             return entities
                 .Include(z => z.User)
-                .Include(z => z.BookInOrders)
-                .Include("BookInOrders.Book")
-                .ToListAsync().Result;
+                .Include(z => z.Books)
+                .ToList();
         }
-        public List<Order> getAllOrdersForUser(string userId)
+        public List<Order> GetAllOrdersForUser(string userId)
         {
             return entities
                 .Include(z => z.User)
-                .Include(z => z.BookInOrders)
-                .Include("BookInOrders.Book")
+                .Include(z => z.Books)
                 .Where(p => p.UserId == userId)
-                .ToListAsync().Result;
+                .ToList();
         }
 
-        public Order getOrderDetails(BaseEntity model)
+        public Order GetOrderDetails(Order model)
         {
             return entities
                .Include(z => z.User)
-               .Include(z => z.BookInOrders)
-               .Include("BookInOrders.Book")
-               .SingleOrDefaultAsync(z => z.Id == model.Id).Result;
+               .Include(z => z.Books)
+               .Single(z => z.Id == model.Id);
         }
     }
 }
