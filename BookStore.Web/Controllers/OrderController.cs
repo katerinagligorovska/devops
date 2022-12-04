@@ -1,5 +1,4 @@
-﻿using BookStore.Domain;
-using BookStore.Service.Interface;
+﻿using BookStore.Service.Interface;
 using ClosedXML.Excel;
 using GemBox.Document;
 using Microsoft.AspNetCore.Authorization;
@@ -23,17 +22,13 @@ namespace BookStore.Web.Controllers
         public IActionResult Index()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = this.orderService.getAllOrders(userId);
+            var result = this.orderService.GetAllUserOrders(userId);
             return View(result);
         }
 
         public IActionResult Details(Guid id)
         {
-            var model = new BaseEntity
-            {
-                Id = id
-            };
-            var result = this.orderService.getOrderDetails(model);
+            var result = this.orderService.GetOrderDetails(id);
             return View(result);
         }
 
@@ -43,76 +38,67 @@ namespace BookStore.Web.Controllers
             string fileName = "Orders.xlsx";
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-            using (var workbook = new XLWorkbook())
+            using var workbook = new XLWorkbook();
+            IXLWorksheet worksheet = workbook.Worksheets.Add("All Orders");
+            worksheet.ColumnWidth = 50;
+            worksheet.Cell(1, 1).Value = "Order Id";
+            worksheet.Cell(1, 2).Value = "Costumer Email";
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var orders = this.orderService.GetAllUserOrders(userId);
+
+            for (int i = 0; i <= orders.Count(); i++)
             {
-                IXLWorksheet worksheet = workbook.Worksheets.Add("All Orders");
-                worksheet.ColumnWidth = 50;
-
-                worksheet.Cell(1, 1).Value = "Order Id";
-                worksheet.Cell(1, 2).Value = "Costumer Email";
-
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var result = this.orderService.getAllOrders(userId);
-
-                for (int i = 1; i <= result.Count(); i++)
+                var order = orders.ElementAt(i);
+                worksheet.Cell(i + 1, 1).Value = order.Id.ToString();
+                worksheet.Cell(i + 1, 2).Value = order.User.Email;
+                if (order.Books == null)
                 {
-                    var item = result[i - 1];
-
-                    worksheet.Cell(i + 1, 1).Value = item.Id.ToString();
-                    worksheet.Cell(i + 1, 2).Value = item.User.Email;
-
-                    for (int p = 0; p < item.BookInOrders.Count(); p++)
-                    {
-                        worksheet.Cell(1, p + 3).Value = "Book - " + (p + 1);
-                        worksheet.Cell(i + 1, p + 3).Value = item.BookInOrders.ElementAt(p).Book.BookName;
-                    }
+                    continue;
                 }
 
-                using (var stream = new MemoryStream())
+                for (int j = 0; j < order.Books.Count; j++)
                 {
-                    workbook.SaveAs(stream);
-                    var content = stream.ToArray();
-
-                    return File(content, contentType, fileName);
+                    var book = order.Books.ElementAt(j);
+                    worksheet.Cell(1, j + 3).Value = "Book - " + (j + 1);
+                    worksheet.Cell(i + 1, j + 3).Value = book.BookName;
                 }
-
             }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+            return File(content, contentType, fileName);
         }
 
         public FileContentResult CreateInvoice(Guid id)
         {
-            var model = new BaseEntity
-            {
-                Id = id
-            };
-            var result = this.orderService.getOrderDetails(model);
-
+            var result = this.orderService.GetOrderDetails(id);
             var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "files\\Invoice.docx");
             var document = DocumentModel.Load(templatePath);
-
 
             document.Content.Replace("{{OrderNumber}}", result.Id.ToString());
             document.Content.Replace("{{UserName}}", result.User.UserName);
 
-            StringBuilder sb = new StringBuilder();
-
+            var sb = new StringBuilder();
             var totalPrice = 0.0;
-
-            foreach (var item in result.BookInOrders)
+            if (result.Books != null)
             {
-                totalPrice += item.Quantity * item.Book.Price;
-                sb.AppendLine(item.Book.BookName + " with quantity of: " + item.Quantity + "\' with price of: " + item.Book.Price + "$");
+                var bookCounts = result.Books.GroupBy(x => x.Id).Select(x => new { BookId = x.Key, Count = x.Count() });
+                foreach (var item in bookCounts)
+                {
+                    var book = result.Books.First(x => x.Id == item.BookId);
+                    sb.Append($"{book.BookName} - {item.Count} - {book.Price}$");
+                    sb.Append(Environment.NewLine);
+                    totalPrice += book.Price * item.Count;
+                }
             }
-
 
             document.Content.Replace("{{BookList}}", sb.ToString());
             document.Content.Replace("{{TotalPrice}}", totalPrice.ToString() + "$");
 
-
-            var stream = new MemoryStream();
-
+            using var stream = new MemoryStream();
             document.Save(stream, new PdfSaveOptions());
-
             return File(stream.ToArray(), new PdfSaveOptions().ContentType, "ExportInvoice.pdf");
         }
     }

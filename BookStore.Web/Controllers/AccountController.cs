@@ -48,7 +48,7 @@ namespace BookStore.Web.Controllers
                         PhoneNumberConfirmed = true,
                         FirstName = request.Name,
                         LastName = request.LastName,
-                        UserCart = new ShoppingCart()
+                        Cart = new ShoppingCart()
                     };
 
 

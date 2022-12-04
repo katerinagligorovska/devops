@@ -13,11 +13,9 @@ namespace BookStore.Web.Controllers
     public class BooksController : Controller
     {
         private readonly IBookService _bookService;
-        // private readonly ILogger<BooksController> _logger;
 
         public BooksController(IBookService bookService)
         {
-            //_logger = logger;
             _bookService = bookService;
         }
 
@@ -25,7 +23,6 @@ namespace BookStore.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            //_logger.LogInformation("User Request -> Get All bookss!");
             return View(this._bookService.GetAllBooks());
         }
 
@@ -41,20 +38,9 @@ namespace BookStore.Web.Controllers
         }
 
         // GET: Books/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var book = this._bookService.GetDetailsForBook(id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-
             return View(book);
         }
 
@@ -69,7 +55,7 @@ namespace BookStore.Web.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BookName,BookImage,BookDescription,Price,Rating,Genre")] Book book)
+        public async Task<IActionResult> Create([Bind("BookName,BookImage,BookDescription,Price,Rating,Genre")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -82,24 +68,10 @@ namespace BookStore.Web.Controllers
         }
 
 
-
-
-
-
         // GET: Books/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            //_logger.LogInformation("User Request -> Get edit form for Book!");
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var book = this._bookService.GetDetailsForBook(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
             return View(book);
         }
 
@@ -141,21 +113,9 @@ namespace BookStore.Web.Controllers
         }
 
         // GET: Books/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            // _logger.LogInformation("User Request -> Get delete form for Book!");
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var book = this._bookService.GetDetailsForBook(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-
             return View(book);
         }
 
@@ -180,9 +140,6 @@ namespace BookStore.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddBookToCard(AddToShoppingCartDto model)
         {
-
-            // _logger.LogInformation("User Request -> Add book in ShoppingCart and save changes in database!");
-
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

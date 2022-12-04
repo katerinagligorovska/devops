@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<BookStore.Domain.StripeSettings> Stripe
-@model BookStore.Domain.DTO.ShoppingCartDto
+@model BookStore.Domain.Entity.ShoppingCart
 
 @{
     ViewData["Title"] = "Index";
@@ -8,20 +8,23 @@
 }
 
 <div class="container">
-
+    @{
+        var TotalPrice = Model.Books.Sum(b => b.Price);
+        var BookCounts = Model.Books.GroupBy(b => b.Id).Select(b =>  new { BookId = b.Key, Count = b.Count() }).ToList();
+    }
 
     <div class="row m-4">
-        @if (Model.TotalPrice != 0)
+        @if (TotalPrice != 0)
         {
-            <form asp-controller="ShoppingCard" asp-action="PayOrder" method="post">
+            <form asp-controller="ShoppingCart" asp-action="PayOrder" method="post">
                 <article>
                     <script src="https://checkout.stripe.com/checkout.js"
                         class="stripe-button"
                         data-key="@Stripe.Value.PublishableKey"
                         data-locale="auto"
                         data-description="EBook Application Payment"
-                        data-amount="@(Model.TotalPrice * 100)"
-                        data-label="Pay $@Model.TotalPrice">
+                        data-amount="@(TotalPrice * 100)"
+                        data-label="Pay $@TotalPrice">
                     </script>
                 </article>
             </form>
@@ -48,16 +51,16 @@
                 }
                 else
                 {
-                    @for (int i = 0; i < Model.Books.Count; i++)
+                    @for (int i = 0; i < BookCounts.Count; i++)
                     {
-                        var item = Model.Books[i];
-
+                        var bookCount = BookCounts.ElementAt(i);
+                        var item = Model.Books.First(b => b.Id == bookCount.BookId);
                         <tr>
                             <th scope="row">@(i + 1)</th>
-                            <td>@item.CurrnetBook.BookName</td>
-                            <td>@item.Quantity</td>
-                            <td>$@item.CurrnetBook.Price</td>
-                            <td><a asp-controller="ShoppingCard" asp-action="DeleteFromShoppingCart" asp-route-id="@item.BookId" class="btn btn-danger">Delete From ShoppingCart</a></td>
+                            <td>@item.BookName</td>
+                            <td>@bookCount.Count</td>
+                            <td>$@item.Price</td>
+                            <td><a asp-controller="ShoppingCard" asp-action="DeleteFromShoppingCart" asp-route-id="@item.Id" class="btn btn-danger">Delete From ShoppingCart</a></td>
                         </tr>
                     }
                 }
@@ -68,7 +71,7 @@
                     <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
-                    <th scope="col">$@Model.TotalPrice</th>
+                    <th scope="col">$@TotalPrice</th>
                 </tr>
             </tfoot>
         </table>

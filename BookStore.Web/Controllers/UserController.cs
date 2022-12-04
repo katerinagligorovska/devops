@@ -37,7 +37,7 @@ namespace BookStore.Web.Controllers
                         Email = item.Email,
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
-                        UserCart = new ShoppingCart()
+                        Cart = new ShoppingCart()
                     };
                     var result = userManager.CreateAsync(user, item.Password).Result;
 

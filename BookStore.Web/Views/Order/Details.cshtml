@@ -7,9 +7,10 @@
 
     <a asp-action="Index">Back to List</a>
 
-    @for (int i = 0; i < Model.BookInOrders.Count(); i++)
+    @for (int i = 0; i < Model.Books.Count(); i++)
     {
-        var item = Model.BookInOrders.ElementAt(i).Book;
+        var item = Model.Books.ElementAt(i);
+        var bookQuantity = Model.Books.GroupBy(x => x.Id).Select(x => x.Count());
 
         if (i % 3 == 0)
         {
@@ -41,7 +42,7 @@
                                         <b>Genre:</b> <br />
                                        @item.Genre
                                     </label>
-                                <p>Quantity: @Model.BookInOrders.ElementAt(i).Quantity</p>
+                                <p>Quantity: @bookQuantity</p>
 
 
                                 </p>

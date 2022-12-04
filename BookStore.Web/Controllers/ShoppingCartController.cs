@@ -1,4 +1,5 @@
-﻿using BookStore.Service.Interface;
+﻿using BookStore.Domain.Entity;
+using BookStore.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using System.Security.Claims;
@@ -18,8 +19,9 @@ namespace BookStore.Web.Controllers
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return View(this._shoppingCartService.getShoppingCartInfo(userId));
+            var shoppingCart = this._shoppingCartService.GetShoppingCartInfo(userId);
+            shoppingCart.Books ??= new List<Book>();
+            return View(shoppingCart);
         }
 
         public IActionResult DeleteFromShoppingCart(Guid id)
@@ -27,7 +29,7 @@ namespace BookStore.Web.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = this._shoppingCartService.deleteBookFromSoppingCart(userId, id);
+            var result = this._shoppingCartService.DeleteBookFromShoppingCart(userId, id);
 
             if (result)
             {
@@ -42,9 +44,7 @@ namespace BookStore.Web.Controllers
         public Boolean Order()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var result = this._shoppingCartService.order(userId);
-
+            var result = this._shoppingCartService.CanCreateOrder(userId);
             return result;
         }
 
@@ -54,17 +54,17 @@ namespace BookStore.Web.Controllers
             var chargeService = new ChargeService();
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var order = this._shoppingCartService.getShoppingCartInfo(userId);
+            var order = this._shoppingCartService.GetShoppingCartInfo(userId);
 
             var customer = customerService.Create(new CustomerCreateOptions
             {
                 Email = stripeEmail,
                 Source = stripeToken
             });
-
+            var total = order.Books.Sum(x => x.Price);
             var charge = chargeService.Create(new ChargeCreateOptions
             {
-                Amount = (Convert.ToInt32(order.TotalPrice) * 100),
+                Amount = total,
                 Description = "EBook Application Payment",
                 Currency = "usd",
                 Customer = customer.Id

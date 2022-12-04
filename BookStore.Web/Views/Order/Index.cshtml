@@ -29,7 +29,7 @@
                 <tr>
                     <th scope="row">@(i + 1)</th>
                     <td>@item.User.Email</td>
-                    <td>@item.BookInOrders.Count()</td>
+                    <td>@item.Books.Count()</td>
                     <td>
                         <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a>
                         <a class="btn btn-secondary" asp-action="CreateInvoice" asp-route-id="@item.Id">Create Invoice</a>

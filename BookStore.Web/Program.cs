@@ -31,6 +31,8 @@ builder.Services.AddTransient<IOrderService, BookStore.Service.Implementation.Or
 builder.Services.AddTransient<IUserService, BookStore.Service.Implementation.UserService>();
 
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +42,10 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+using var scope = app.Services.CreateAsyncScope();
+using var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+db.Database.MigrateAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
