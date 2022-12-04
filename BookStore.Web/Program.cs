@@ -1,3 +1,4 @@
+using BookStore.Domain;
 using BookStore.Domain.Identity;
 using BookStore.Repository;
 using BookStore.Repository.Implementation;
@@ -24,7 +25,7 @@ builder.Services.AddIdentity<EShopAppUser, IdentityRole>().AddEntityFrameworkSto
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
-
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 builder.Services.AddTransient<IBookService, BookStore.Service.Implementation.BookService>();
 builder.Services.AddTransient<IShoppingCartService, BookStore.Service.Implementation.ShoppingCartService>();
 builder.Services.AddTransient<IOrderService, BookStore.Service.Implementation.OrderService>();
