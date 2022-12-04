@@ -60,7 +60,7 @@
                             <td>@item.BookName</td>
                             <td>@bookCount.Count</td>
                             <td>$@item.Price</td>
-                            <td><a asp-controller="ShoppingCard" asp-action="DeleteFromShoppingCart" asp-route-id="@item.Id" class="btn btn-danger">Delete From ShoppingCart</a></td>
+                            <td><a asp-controller="ShoppingCart" asp-action="DeleteFromShoppingCart" asp-route-id="@item.Id" class="btn btn-danger">Delete From ShoppingCart</a></td>
                         </tr>
                     }
                 }
