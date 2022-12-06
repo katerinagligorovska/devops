@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookStore.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221203233605_initial")]
-    partial class initial
+    [Migration("20221206222819_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -127,8 +127,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dea75369-1f74-4569-afdd-3bbda25b8291"),
-                            OwnerId = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b"
+                            Id = new Guid("248092de-f108-47ad-bced-05fac6eb3a11"),
+                            OwnerId = "edb3b8f2-d34d-4c95-92af-2690f79cd841"
                         });
                 });
 
@@ -206,9 +206,9 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b",
+                            Id = "edb3b8f2-d34d-4c95-92af-2690f79cd841",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "df78b882-298a-4277-b9bd-050783ac3ada",
+                            ConcurrencyStamp = "2f8bd967-e670-4b29-9583-f7a5a479b851",
                             Email = "admin@test.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -216,9 +216,9 @@ namespace BookStore.Repository.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEK327TXHGrVXg5rqcDcfF7y9RNn/URGSsu/TtsusB5pE+BOLg3gPrBNC7WRTpzjF1Q==",
-                            PhoneNumberConfirmed = true,
-                            SecurityStamp = "0f60b11e-cd4d-4e3b-b6bb-70fa5b00b182",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHoB7DA0eLLSvrJvWnIcSU0/49QyuEBYMuW+Cky5F9/wJmkopNidE9hWHugdQg6E8Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "cddbfda1-61ef-4de9-bd91-ba45c9251e11",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         });
@@ -300,15 +300,15 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "42124893-15f9-469e-ae10-947c16eda57f",
-                            ConcurrencyStamp = "dd3e836d-12e9-4c1a-b193-3e27bcaaaa43",
+                            Id = "5fc9fc47-01a5-47c9-8509-64f9973e8af6",
+                            ConcurrencyStamp = "dba65ac0-6d70-48a7-ba26-243df30de17e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6b0216e3-c180-4fe5-9310-60f1ad66131f",
-                            ConcurrencyStamp = "7df1b74e-83cf-468d-be51-69770ca17e27",
+                            Id = "3039993d-dd00-41c2-b5e6-f44f40fdca3b",
+                            ConcurrencyStamp = "0af3a44d-ea0b-4c93-907b-b1a9d69f3b75",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -403,8 +403,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "38ab4f7c-d7c8-4b44-a44a-17e083cab72b",
-                            RoleId = "42124893-15f9-469e-ae10-947c16eda57f"
+                            UserId = "edb3b8f2-d34d-4c95-92af-2690f79cd841",
+                            RoleId = "5fc9fc47-01a5-47c9-8509-64f9973e8af6"
                         });
                 });
 

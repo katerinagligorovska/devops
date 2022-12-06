@@ -1,4 +1,4 @@
-﻿@model List<BookStore.Domain.Identity.UserDto>
+﻿@model List<BookStore.Web.ViewModel.UserViewModel>
 
 <div class="container">
 
@@ -18,7 +18,8 @@
                 <tr>
                     <th scope="row">@(i + 1)</th>
                     <td>@item.Email</td>
-                    <td><a class="btn btn-outline-secondary" asp-action="ManageUserRoles" asp-route-userId="@item.Id">Manage User Roles</a></td>
+                    <td><a class="btn btn-outline-secondary" asp-action="ManageUserRoles" asp-route-userId="@item.Id">Manage
+                            User Roles</a></td>
                 </tr>
 
             }

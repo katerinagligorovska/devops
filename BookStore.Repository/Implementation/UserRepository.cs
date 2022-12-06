@@ -26,7 +26,7 @@ namespace BookStore.Repository.Implementation
         {
             return entities
                .Include(z => z.Cart)
-               .Single(s => s.Id == id.ToString());
+               .Single(s => s.Id == id);
         }
         public void Insert(
             EShopAppUser entity)

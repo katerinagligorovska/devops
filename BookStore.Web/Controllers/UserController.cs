@@ -1,5 +1,4 @@
 ﻿using BookStore.Domain.DTO;
-using BookStore.Domain.Entity;
 using BookStore.Domain.Identity;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Identity;
@@ -32,12 +31,9 @@ namespace BookStore.Web.Controllers
                 {
                     var user = new EShopAppUser
                     {
-                        UserName = item.Email,
-                        NormalizedUserName = item.Email,
-                        Email = item.Email,
-                        EmailConfirmed = true,
-                        PhoneNumberConfirmed = true,
-                        Cart = new ShoppingCart()
+                        FirstName = item.Name,
+                        LastName = item.LastName,
+                        Email = item.Email
                     };
                     var result = userManager.CreateAsync(user, item.Password).Result;
 

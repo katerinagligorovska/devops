@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BookStore.Repository.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -293,24 +293,24 @@ namespace BookStore.Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "42124893-15f9-469e-ae10-947c16eda57f", "dd3e836d-12e9-4c1a-b193-3e27bcaaaa43", "Admin", "ADMIN" },
-                    { "6b0216e3-c180-4fe5-9310-60f1ad66131f", "7df1b74e-83cf-468d-be51-69770ca17e27", "User", "USER" }
+                    { "3039993d-dd00-41c2-b5e6-f44f40fdca3b", "0af3a44d-ea0b-4c93-907b-b1a9d69f3b75", "User", "USER" },
+                    { "5fc9fc47-01a5-47c9-8509-64f9973e8af6", "dba65ac0-6d70-48a7-ba26-243df30de17e", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "38ab4f7c-d7c8-4b44-a44a-17e083cab72b", 0, "df78b882-298a-4277-b9bd-050783ac3ada", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEK327TXHGrVXg5rqcDcfF7y9RNn/URGSsu/TtsusB5pE+BOLg3gPrBNC7WRTpzjF1Q==", null, true, "0f60b11e-cd4d-4e3b-b6bb-70fa5b00b182", false, "admin@test.com" });
+                values: new object[] { "edb3b8f2-d34d-4c95-92af-2690f79cd841", 0, "2f8bd967-e670-4b29-9583-f7a5a479b851", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEHoB7DA0eLLSvrJvWnIcSU0/49QyuEBYMuW+Cky5F9/wJmkopNidE9hWHugdQg6E8Q==", null, false, "cddbfda1-61ef-4de9-bd91-ba45c9251e11", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "42124893-15f9-469e-ae10-947c16eda57f", "38ab4f7c-d7c8-4b44-a44a-17e083cab72b" });
+                values: new object[] { "5fc9fc47-01a5-47c9-8509-64f9973e8af6", "edb3b8f2-d34d-4c95-92af-2690f79cd841" });
 
             migrationBuilder.InsertData(
                 table: "ShoppingCarts",
                 columns: new[] { "Id", "OwnerId" },
-                values: new object[] { new Guid("dea75369-1f74-4569-afdd-3bbda25b8291"), "38ab4f7c-d7c8-4b44-a44a-17e083cab72b" });
+                values: new object[] { new Guid("248092de-f108-47ad-bced-05fac6eb3a11"), "edb3b8f2-d34d-4c95-92af-2690f79cd841" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

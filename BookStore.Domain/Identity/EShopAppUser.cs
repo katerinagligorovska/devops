@@ -8,5 +8,6 @@ namespace BookStore.Domain.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public virtual ShoppingCart Cart { get; set; }
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

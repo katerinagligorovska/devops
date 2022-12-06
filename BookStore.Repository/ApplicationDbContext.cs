@@ -23,94 +23,51 @@ public class ApplicationDbContext : IdentityDbContext<EShopAppUser>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<Book>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        builder.Entity<EmailMessage>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        builder.Entity<Order>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        builder.Entity<ShoppingCart>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        builder.Entity<BookInOrder>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        builder.Entity<BookInShoppingCart>()
-            .Property(z => z.Id)
-            .ValueGeneratedOnAdd();
-
-        ////deka se relacii
-        //builder.Entity<BookInShoppingCart>()
-        //    .HasOne(z => z.CurrnetBook)
-        //    .WithMany(z => z.BookInShoppingCarts)
-        //    .HasForeignKey(z => z.ShoppingCartId);
-
-        //builder.Entity<BookInShoppingCart>()
-        //    .HasOne(z => z.UserCart)
-        //    .WithMany(z => z.Books)
-        //    .HasForeignKey(z => z.BookId);
-
-        //za 1-1 
-        builder.Entity<ShoppingCart>()
-            .HasOne(z => z.Owner)
-            .WithOne(z => z.Cart)
-            .HasForeignKey<ShoppingCart>(z => z.OwnerId);
-
-
         var adminRole = new IdentityRole
         {
-            Name = "Admin",
-            NormalizedName = "ADMIN"
+            Id = Guid.NewGuid().ToString(),
+            Name = RoleName.Admin,
+            NormalizedName = RoleName.Admin.ToUpper(),
         };
-
         var userRole = new IdentityRole
         {
-            Name = "User",
-            NormalizedName = "USER"
+            Id = Guid.NewGuid().ToString(),
+            Name = RoleName.User,
+            NormalizedName = RoleName.User.ToUpper(),
         };
 
         // add roles
-        builder.Entity<IdentityRole>().HasData(adminRole, userRole);
-
-        var adminUser = new EShopAppUser
-        {
-            FirstName = "Admin",
-            LastName = "Admin",
-            Email = "admin@test.com",
-            NormalizedEmail = "ADMIN@TEST.COM",
-            EmailConfirmed = true,
-            UserName = "admin@test.com",
-            NormalizedUserName = "ADMIN@TEST.COM",
-            PhoneNumberConfirmed = true,
-        };
+        builder.Entity<IdentityRole>().HasData(adminRole);
+        builder.Entity<IdentityRole>().HasData(userRole);
 
         PasswordHasher<EShopAppUser> ph = new PasswordHasher<EShopAppUser>();
-        adminUser.PasswordHash = ph.HashPassword(adminUser, "Pass123!");
-
-        // seed user
+        var email = "admin@test.com";
+        var username = "admin@test.com";
+        var adminUser = new EShopAppUser
+        {
+            Id = Guid.NewGuid().ToString(),
+            FirstName = "Admin",
+            LastName = "Admin",
+            Email = email,
+            NormalizedEmail = email.ToUpper(),
+            UserName = username,
+            NormalizedUserName = username.ToUpper(),
+            EmailConfirmed = true,
+        };
+        adminUser.PasswordHash = ph.HashPassword(adminUser, "Aa123!");
         builder.Entity<EShopAppUser>().HasData(adminUser);
 
-        // set user role to admin
+        var adminUserCart = new ShoppingCart
+        {
+            Id = Guid.NewGuid(),
+            OwnerId = adminUser.Id,
+        };
+        builder.Entity<ShoppingCart>().HasData(adminUserCart);
         builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
         {
             RoleId = adminRole.Id,
-            UserId = adminUser.Id
+            UserId = adminUser.Id,
         });
-
-        var adminCart = new ShoppingCart
-        {
-            Id = Guid.NewGuid(),
-            OwnerId = adminUser.Id
-        };
-        builder.Entity<ShoppingCart>().HasData(adminCart);
     }
 
 }

@@ -16,5 +16,10 @@ namespace BookStore.Service.Implementation
         {
             return this._userRepository.GetAll();
         }
+
+        public EShopAppUser GetUserById(string id)
+        {
+            return this._userRepository.Get(id);
+        }
     }
 }
