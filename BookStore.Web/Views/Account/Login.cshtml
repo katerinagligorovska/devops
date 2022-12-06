@@ -4,40 +4,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-12">
+<div class="row">
+    <div class="col-12 col-md-6 mx-auto mt-4 pt-3">
+        <h3 class="mb-2">Login to your account</h3>
+        <form asp-action="Login" asp-controller="Account" method="post">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <form asp-action="Login" asp-controller="Account" method="post">
-                <div class="form-group col-sm-12">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-lg-3 control-label" })
-                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Email)
-                </div>
-                <div class="form-group col-sm-12">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-lg-3 control-label" })
-                    @Html.TextBoxFor(m => m.Password, new {
-                    placeholder = "Password",
-                    @class = "form-control",
-                    type = "password"
-                    })
-                    @Html.ValidationMessageFor(m => m.Password)
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        @Html.LabelFor(m => m.RememberMe, new { @class = "col-lg-3 control-label" })
-                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12 btn-submit">
-                            <button type="submit" class="btn btn-dark" style="margin-left: 0.938rem">Login</button>
-                            <a asp-action="Register" asp-controller="Account">
-                                Don't have an account? Click toRegister</a>
-                        </div>
-                    </div>
-            </form>
-        </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                @Html.TextBoxFor(m => m.Password, new {
+                placeholder = "Password",
+                @class = "form-control",
+                type = "password"
+                })
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+            <div class="form-group form-check">
+                @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
+            </div>
+            <div class="d-flex flex-column mt-4">
+                <button type="submit" class="btn btn-dark w-25 mb-2">Login</button>
+                @Html.ActionLink("Don't have an account? Click to Register", "Register", "Account", null)
+            </div>
+        </form>
     </div>
 </div>
