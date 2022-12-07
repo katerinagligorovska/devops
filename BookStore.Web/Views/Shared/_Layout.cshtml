@@ -41,7 +41,7 @@
                         <li class="nav-item active">
                             @Html.ActionLink("Books", "Index", "Books", new { area = "" }, new { @class = "nav-link btn btn-link text-dark" })
                         </li>
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 @Html.ActionLink("Shopping Cart", "Index", "ShoppingCart", new { area = "" }, new { @class = "nav-link btn btn-link text-dark" })
@@ -66,20 +66,15 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
+    <footer class="bd-footer py-4 py-md-5 mt-5 bg-light">
         <div class="container">
-            &copy;
-            @foreach (var member in new List<string>() { "Katerina Gligorovska 185013" }.OrderBy(x => Guid.NewGuid()))
-            {
-                <span>@member.ToString()</span>
-            }
-            - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-12">
+                    Book Store - Katerina Gligorovska 185013 - @Html.ActionLink("Privacy", "Privacy", "Home", new { area = "" }, new { @class = "text-dark" })
+                </div>
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 

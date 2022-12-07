@@ -20,11 +20,16 @@ public class UserViewModel
     [Display(Name = "Email")]
     public string Email { get; set; }
 
-    public UserViewModel(string id, string firstName, string lastName, string email)
+    [Required]
+    [Display(Name = "Roles")]
+    public List<string> Roles { get; set; }
+
+    public UserViewModel(string id, string firstName, string lastName, string email, List<string> roles)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+        Roles = roles;
     }
 }

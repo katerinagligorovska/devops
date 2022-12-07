@@ -117,23 +117,25 @@ public class AccountController : Controller
     public IActionResult UserList()
     {
         string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var users = userService
-            .GetAllUsers()
-            .Where(user => user.Id != id)
-            .ToList()
-            .ConvertAll(new Converter<EShopAppUser, UserViewModel>(
-                user => new UserViewModel(user.Id, user.FirstName, user.LastName, user.Email)
-                )
-            );
-        return View(users);
+
+        var model = new List<UserViewModel>();
+        var users = userService.GetAllUsers().Where(user => user.Id != id).ToList();
+        foreach (var user in users)
+        {
+            var roles = userManager.GetRolesAsync(user).Result.ToList();
+            var userViewModel = new UserViewModel(user.Id, user.FirstName, user.LastName, user.Email, roles);
+            model.Add(userViewModel);
+        }
+        return View(model);
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> ManageUserRoles([FromQuery] string id)
+    public async Task<IActionResult> ManageUserRoles(string id)
     {
         var user = userService.GetUserById(id);
-        var userViewModel = new UserViewModel(user.Id, user.FirstName, user.LastName, user.Email);
+        var roles = await userManager.GetRolesAsync(user);
+        var userViewModel = new UserViewModel(user.Id, user.FirstName, user.LastName, user.Email, roles.ToList());
         var userRoles = await userManager.GetRolesAsync(user);
         var allRoles = roleManager.Roles.ToList();
         var availableRoles = allRoles
@@ -163,6 +165,6 @@ public class AccountController : Controller
             }
             return View(model);
         }
-        return RedirectToAction("ManageUserRoles", "Account");
+        return RedirectToAction("UserList", "Account");
     }
 }

@@ -24,6 +24,7 @@ public class AddUserToRoleViewModel : AddUserToRolePostViewModel
 
     public AddUserToRoleViewModel(UserViewModel user, List<RoleViewModel> roles)
     {
+        UserId = user.Id;
         User = user;
         Roles = roles;
     }

@@ -1,12 +1,11 @@
 ﻿@model BookStore.Web.ViewModel.RegisterViewModel;
 @{
     ViewData["Title"] = "Register";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="row">
     <div class="col-12 col-md-6 mx-auto mt-4 pt-3">
-        <h3 class="mb-2">Register a new account</h3>
-        <form asp-action="Register" asp-controller="Account" method="post">
+        <h3>Register a new account</h3>
+        <form asp-action="Register" asp-controller="Account" method="post" class="mt-2">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstName)

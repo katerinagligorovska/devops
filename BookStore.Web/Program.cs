@@ -31,9 +31,6 @@ builder.Services.AddTransient<IShoppingCartService, BookStore.Service.Implementa
 builder.Services.AddTransient<IOrderService, BookStore.Service.Implementation.OrderService>();
 builder.Services.AddTransient<IUserService, BookStore.Service.Implementation.UserService>();
 
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,7 +43,7 @@ if (!app.Environment.IsDevelopment())
 
 using var scope = app.Services.CreateAsyncScope();
 using var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-db.Database.MigrateAsync();
+db?.Database.MigrateAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

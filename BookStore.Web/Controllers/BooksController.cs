@@ -2,6 +2,7 @@
 using BookStore.Domain.Entity;
 using BookStore.Domain.Identity;
 using BookStore.Service.Interface;
+using BookStore.Web.ViewModel;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,72 +20,78 @@ namespace BookStore.Web.Controllers
             _bookService = bookService;
         }
 
-        // GET: Books
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? title)
         {
-            return View(this._bookService.GetAllBooks());
-        }
-
-        [HttpPost]
-        public IActionResult Index(string title)
-        {
+            List<BookViewModel> model = new List<BookViewModel>();
+            List<Book> books;
             if (title == null)
             {
-                return RedirectToAction("Index");
+                books = this._bookService.GetAllBooks();
             }
-            var allTickets = _bookService.GetAllBooksByTitle(title);
-            return View(allTickets);
+            else
+            {
+                books = this._bookService.GetAllBooksByTitle(title);
+            }
+            foreach (var book in books)
+            {
+                model.Add(new BookViewModel(
+                    book.Id,
+                    book.BookName,
+                    book.BookImage,
+                    book.BookDescription,
+                    book.Genre,
+                    book.Price
+                ));
+            }
+            return View(model);
         }
 
         // GET: Books/Details/5
-        public async Task<IActionResult> Details(Guid id)
+        public IActionResult Details(Guid id)
         {
             var book = this._bookService.GetDetailsForBook(id);
             return View(book);
         }
 
-        // GET: Books/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new CreateBookViewModel());
         }
 
-        // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookName,BookImage,BookDescription,Price,Rating,Genre")] Book book)
+        public IActionResult Create(CreateBookViewModel book)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                book.Id = Guid.NewGuid();
-                this._bookService.CreateNewBook(book);
-                return RedirectToAction(nameof(Index));
-
+                ModelState.AddModelError(string.Empty, "Invalid registration attempt");
+                return View(book);
             }
-            return View(book);
+
+            var newBook = new Book
+            {
+                BookName = book.BookName,
+                BookImage = book.BookImage,
+                BookDescription = book.BookDescription,
+                Price = book.Price,
+                Genre = book.Genre
+            };
+            this._bookService.CreateNewBook(newBook);
+            return RedirectToAction("Index", "Books");
         }
 
 
-        // GET: Books/Edit/5
-        public async Task<IActionResult> Edit(Guid id)
+        public IActionResult Edit(Guid id)
         {
             var book = this._bookService.GetDetailsForBook(id);
             return View(book);
         }
 
-        // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,BookName,BookImage,BookDescription,Price,Rating,Genre")] Book book)
+        public IActionResult Edit(Guid id, [Bind("Id,BookName,BookImage,BookDescription,Price,Rating,Genre")] Book book)
         {
-
-            // _logger.LogInformation("User Request -> Update Book in DataBase!");
-
             if (id != book.Id)
             {
                 return NotFound();
