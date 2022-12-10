@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookStore.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221206222819_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221208140327_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,16 +52,103 @@ namespace BookStore.Repository.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ShoppingCartId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ShoppingCartId");
-
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("87b9f6c4-60ba-45c5-a940-825073f72072"),
+                            BookDescription = "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien. The story began as a sequel to Tolkien's 1937 fantasy novel The Hobbit, but eventually developed into a much larger work. Written in stages between 1937 and 1949, The Lord of the Rings is one of the best-selling novels ever written, with over 150 million copies sold.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Lord of the Rings",
+                            Genre = "Fantasy",
+                            Price = 20
+                        },
+                        new
+                        {
+                            Id = new Guid("0f24ff84-c097-4b3a-a2dc-ea77b988ef3b"),
+                            BookDescription = "Harry Potter and the Philosopher's Stone is a fantasy novel written by British author J. K. Rowling. The first novel in the Harry Potter series and Rowling's debut novel, it follows Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry. Harry makes close friends and a few enemies during his first year at the school, and with the help of his friends, Harry faces an attempted comeback by the dark wizard Lord Voldemort, who killed Harry's parents, but failed to kill Harry when he was just 15 months old.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "Harry Potter and the Philosopher's Stone",
+                            Genre = "Fantasy",
+                            Price = 15
+                        },
+                        new
+                        {
+                            Id = new Guid("73e27f80-2156-4f98-9f32-fa4912ddb2c0"),
+                            BookDescription = "The Hobbit, or There and Back Again is a children's fantasy novel by English author J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Hobbit",
+                            Genre = "Fantasy",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("8573ee61-1002-4e62-aa68-3dd1edbbc596"),
+                            BookDescription = "The Little Prince is a novella, the most famous work of French aristocrat, writer, poet, and pioneering aviator Antoine de Saint-Exupéry.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Little Prince",
+                            Genre = "Fantasy",
+                            Price = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("db3670e7-63be-4936-bd0c-665b709de1f2"),
+                            BookDescription = "The Hitchhiker's Guide to the Galaxy is a comedy science fiction series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Hitchhiker's Guide to the Galaxy",
+                            Genre = "Comedy",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("f638a22c-fb26-4ab7-b399-a92fd795eddc"),
+                            BookDescription = "The Restaurant at the End of the Universe is a science fiction comedy novel by Douglas Adams, the second in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 1 October 1980 by Pan Books, and in the United States on 1 November 1980 by Del Rey Books.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Restaurant at the End of the Universe",
+                            Genre = "Comedy",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("35cbf8cc-7ded-4244-939d-204bb6a245a0"),
+                            BookDescription = "Life, the Universe and Everything is a science fiction comedy novel by Douglas Adams, the third in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 27 October 1982 by Pan Books, and in the United States on 1 November 1982 by Del Rey Books.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "Life, the Universe and Everything",
+                            Genre = "Comedy",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("a626389d-8e37-4ac6-bf7b-fd4e312e3211"),
+                            BookDescription = "Dracula is an 1897 Gothic horror novel by Irish author Bram Stoker. Famous for introducing the character of the vampire Count Dracula, the novel tells the story of Dracula's attempt to move from Transylvania to England so that he may find new blood and spread the undead curse, and of the battle between Dracula and a small volverine",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "Dracula",
+                            Genre = "Horror",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("4ab377da-596a-4a0f-9a08-b7437e7d373a"),
+                            BookDescription = "Frankenstein; or, The Modern Prometheus is a novel written by English author Mary Shelley that tells the story of Victor Frankenstein, a young scientist who creates a hideous sapient creature in an unorthodox scientific experiment. Shelley started writing the story when she was 18, and the novel was published when she was 20.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "Frankenstein",
+                            Genre = "Horror",
+                            Price = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("fc10b3e7-a841-4d20-826e-3aa96f79fbe4"),
+                            BookDescription = "The Picture of Dorian Gray is a philosophical novel by Oscar Wilde, first published complete in the July 1890 issue of Lippincott's Monthly Magazine. Fearing the story was indecent, the magazine's editor deleted roughly five hundred words before publication. The work's initial reception was mixed, with some reviewers praising its literary merits and others condemning the story's immoral content.",
+                            BookImage = "https://picsum.photos/200/300",
+                            BookName = "The Picture of Dorian Gray",
+                            Genre = "Horror",
+                            Price = 10
+                        });
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.EmailMessage", b =>
@@ -127,8 +214,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("248092de-f108-47ad-bced-05fac6eb3a11"),
-                            OwnerId = "edb3b8f2-d34d-4c95-92af-2690f79cd841"
+                            Id = new Guid("18228e68-0602-42e3-9e6d-0e23936cb4dd"),
+                            OwnerId = "623236cc-5736-4fad-b863-d333d8bd3774"
                         });
                 });
 
@@ -206,9 +293,9 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "edb3b8f2-d34d-4c95-92af-2690f79cd841",
+                            Id = "623236cc-5736-4fad-b863-d333d8bd3774",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2f8bd967-e670-4b29-9583-f7a5a479b851",
+                            ConcurrencyStamp = "f8971a1a-49a1-4016-a07e-42c961369656",
                             Email = "admin@test.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -216,9 +303,9 @@ namespace BookStore.Repository.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "ADMIN@TEST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHoB7DA0eLLSvrJvWnIcSU0/49QyuEBYMuW+Cky5F9/wJmkopNidE9hWHugdQg6E8Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGgmvdRlwQGHXWFhrfeIxGDfMYHy/HW6oxZZfr/f7qmiBtFOOGQDBapYJFXYRA+dxQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cddbfda1-61ef-4de9-bd91-ba45c9251e11",
+                            SecurityStamp = "b9fb7024-ee1d-4275-8c62-e44f61d29d1d",
                             TwoFactorEnabled = false,
                             UserName = "admin@test.com"
                         });
@@ -250,22 +337,16 @@ namespace BookStore.Repository.Migrations
 
             modelBuilder.Entity("BookStore.Domain.Relations.BookInShoppingCart", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("BookId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BookId")
+                    b.Property<Guid>("ShoppingCartId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("ShoppingCartId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
+                    b.HasKey("BookId", "ShoppingCartId");
 
                     b.HasIndex("ShoppingCartId");
 
@@ -300,15 +381,15 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5fc9fc47-01a5-47c9-8509-64f9973e8af6",
-                            ConcurrencyStamp = "dba65ac0-6d70-48a7-ba26-243df30de17e",
+                            Id = "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f",
+                            ConcurrencyStamp = "d9612bef-91fc-4a41-8f87-574b65e3897f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3039993d-dd00-41c2-b5e6-f44f40fdca3b",
-                            ConcurrencyStamp = "0af3a44d-ea0b-4c93-907b-b1a9d69f3b75",
+                            Id = "d603372b-0cb7-4cf6-aab8-00de031e80c3",
+                            ConcurrencyStamp = "a3e8cdd3-aac4-4edf-bb94-8e7dbfe8bfad",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -403,8 +484,8 @@ namespace BookStore.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "edb3b8f2-d34d-4c95-92af-2690f79cd841",
-                            RoleId = "5fc9fc47-01a5-47c9-8509-64f9973e8af6"
+                            UserId = "623236cc-5736-4fad-b863-d333d8bd3774",
+                            RoleId = "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f"
                         });
                 });
 
@@ -432,10 +513,6 @@ namespace BookStore.Repository.Migrations
                     b.HasOne("BookStore.Domain.Entity.Order", null)
                         .WithMany("Books")
                         .HasForeignKey("OrderId");
-
-                    b.HasOne("BookStore.Domain.Entity.ShoppingCart", null)
-                        .WithMany("Books")
-                        .HasForeignKey("ShoppingCartId");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entity.Order", b =>
@@ -488,7 +565,7 @@ namespace BookStore.Repository.Migrations
                         .IsRequired();
 
                     b.HasOne("BookStore.Domain.Entity.ShoppingCart", "Cart")
-                        .WithMany()
+                        .WithMany("BookInShoppingCarts")
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -563,7 +640,7 @@ namespace BookStore.Repository.Migrations
 
             modelBuilder.Entity("BookStore.Domain.Entity.ShoppingCart", b =>
                 {
-                    b.Navigation("Books");
+                    b.Navigation("BookInShoppingCarts");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Identity.EShopAppUser", b =>

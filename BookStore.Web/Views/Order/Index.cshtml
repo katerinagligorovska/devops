@@ -16,7 +16,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Costumer Details</th>
-                <th scope="col">Number of products</th>
+                
 
                 <th></th>
             </tr>
@@ -28,8 +28,8 @@
 
                 <tr>
                     <th scope="row">@(i + 1)</th>
-                    <td>@item.User.Email</td>
-                    <td>@item.Books.Count()</td>
+                    <td>@item.User.UserName</td>
+                    
                     <td>
                         <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a>
                         <a class="btn btn-secondary" asp-action="CreateInvoice" asp-route-id="@item.Id">Create Invoice</a>

@@ -6,6 +6,7 @@ using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,7 @@ builder.Services.AddTransient<IOrderService, BookStore.Service.Implementation.Or
 builder.Services.AddTransient<IUserService, BookStore.Service.Implementation.UserService>();
 
 var app = builder.Build();
-
+StripeConfiguration.SetApiKey(builder.Configuration.GetSection("Stripe")["SecretKey"]);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

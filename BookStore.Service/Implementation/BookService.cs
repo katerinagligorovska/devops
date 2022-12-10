@@ -1,5 +1,6 @@
 ﻿using BookStore.Domain.DTO;
 using BookStore.Domain.Entity;
+using BookStore.Domain.Relations;
 using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
 
@@ -10,6 +11,7 @@ namespace BookStore.Service.Implementation
         private readonly IRepository<Book> _bookRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRepository<ShoppingCart> _shoppingCartRepository;
+
 
         public BookService(IRepository<Book> bookRepository, IUserRepository userRepository, IRepository<ShoppingCart> shoppingCartRepository)
         {
@@ -22,13 +24,17 @@ namespace BookStore.Service.Implementation
         public bool AddToShoppingCart(AddToShoppingCartDto item, string userID)
         {
             var user = this._userRepository.Get(userID);
-            var cart = user.Cart ?? new ShoppingCart();
-            cart.Owner = user;
-            var book = this.GetDetailsForBook(item.SelectedBookId);
-            for (int i = 0; i < item.Quantity; i++)
+            var cart = user.Cart;
+            cart.BookInShoppingCarts ??= new List<BookInShoppingCart>();
+            var persisted = cart.BookInShoppingCarts.Where(b => b.CurrentBook.Id == item.SelectedBookId).FirstOrDefault();
+            var exists = persisted != null;
+            persisted ??= new BookInShoppingCart() { BookId = item.SelectedBookId, ShoppingCartId = cart.Id, Quantity = 0 };
+            if (!exists)
             {
-                cart.Books.Add(book);
+                cart.BookInShoppingCarts.Add(persisted);
             }
+            persisted.Quantity += item.Quantity;
+
             _shoppingCartRepository.Update(cart);
             return true;
         }

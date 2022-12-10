@@ -30,8 +30,8 @@ namespace BookStore.Service.Implementation
 
             var user = this._userRepository.Get(userId);
             var shoppingCart = user.Cart;
-            var deleted = shoppingCart.Books.Where(z => z.Id.Equals(productId)).First();
-            shoppingCart.Books.Remove(deleted);
+            var deleted = shoppingCart.BookInShoppingCarts.Where(z => z.CurrentBook.Id == productId).First();
+            shoppingCart.BookInShoppingCarts.Remove(deleted);
             this._shoppingCartRepository.Update(shoppingCart);
             return true;
         }
@@ -39,7 +39,17 @@ namespace BookStore.Service.Implementation
         public ShoppingCart GetShoppingCartInfo(string userId)
         {
             var user = this._userRepository.Get(userId);
-            return user.Cart;
+            var userCart = user.Cart;
+
+            var books = userCart.BookInShoppingCarts.ToList();
+            var result = new ShoppingCart
+            {
+                BookInShoppingCarts = books,
+                OwnerId = user.Id,
+                Owner = user
+            };
+            return result;
+
         }
 
         public bool CanCreateOrder(string userId)
@@ -58,13 +68,14 @@ namespace BookStore.Service.Implementation
                 UserId = userId,
                 Books = new List<Book>()
             };
-
-            foreach (var book in userCart.Books)
+            foreach (var book in userCart.BookInShoppingCarts)
             {
-                order.Books.Add(book);
+                order.Books.Add(book.CurrentBook);
             }
+
+
             this._orderRepository.Insert(order);
-            loggedInUser.Cart.Books.Clear();
+            loggedInUser.Cart.BookInShoppingCarts.Clear();
             this._userRepository.Update(loggedInUser);
 
             StringBuilder sb = new StringBuilder();

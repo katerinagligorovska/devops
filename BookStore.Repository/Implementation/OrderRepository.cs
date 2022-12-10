@@ -32,7 +32,7 @@ namespace BookStore.Repository.Implementation
         public Order GetOrderDetails(Order model)
         {
             return entities
-               .Include(z => z.User)
+               .Include(z => z.UserId)
                .Include(z => z.Books)
                .Single(z => z.Id == model.Id);
         }

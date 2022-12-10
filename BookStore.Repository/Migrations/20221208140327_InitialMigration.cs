@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace BookStore.Repository.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -218,8 +217,7 @@ namespace BookStore.Repository.Migrations
                     BookDescription = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<int>(type: "integer", nullable: false),
                     Genre = table.Column<string>(type: "text", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: true)
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -228,11 +226,6 @@ namespace BookStore.Repository.Migrations
                         name: "FK_Books_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Books_ShoppingCarts_ShoppingCartId",
-                        column: x => x.ShoppingCartId,
-                        principalTable: "ShoppingCarts",
                         principalColumn: "Id");
                 });
 
@@ -266,14 +259,13 @@ namespace BookStore.Repository.Migrations
                 name: "BookInShoppingCarts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     BookId = table.Column<Guid>(type: "uuid", nullable: false),
                     ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookInShoppingCarts", x => x.Id);
+                    table.PrimaryKey("PK_BookInShoppingCarts", x => new { x.BookId, x.ShoppingCartId });
                     table.ForeignKey(
                         name: "FK_BookInShoppingCarts_Books_BookId",
                         column: x => x.BookId,
@@ -293,24 +285,41 @@ namespace BookStore.Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3039993d-dd00-41c2-b5e6-f44f40fdca3b", "0af3a44d-ea0b-4c93-907b-b1a9d69f3b75", "User", "USER" },
-                    { "5fc9fc47-01a5-47c9-8509-64f9973e8af6", "dba65ac0-6d70-48a7-ba26-243df30de17e", "Admin", "ADMIN" }
+                    { "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f", "d9612bef-91fc-4a41-8f87-574b65e3897f", "Admin", "ADMIN" },
+                    { "d603372b-0cb7-4cf6-aab8-00de031e80c3", "a3e8cdd3-aac4-4edf-bb94-8e7dbfe8bfad", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "edb3b8f2-d34d-4c95-92af-2690f79cd841", 0, "2f8bd967-e670-4b29-9583-f7a5a479b851", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEHoB7DA0eLLSvrJvWnIcSU0/49QyuEBYMuW+Cky5F9/wJmkopNidE9hWHugdQg6E8Q==", null, false, "cddbfda1-61ef-4de9-bd91-ba45c9251e11", false, "admin@test.com" });
+                values: new object[] { "623236cc-5736-4fad-b863-d333d8bd3774", 0, "f8971a1a-49a1-4016-a07e-42c961369656", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEGgmvdRlwQGHXWFhrfeIxGDfMYHy/HW6oxZZfr/f7qmiBtFOOGQDBapYJFXYRA+dxQ==", null, false, "b9fb7024-ee1d-4275-8c62-e44f61d29d1d", false, "admin@test.com" });
+
+            migrationBuilder.InsertData(
+                table: "Books",
+                columns: new[] { "Id", "BookDescription", "BookImage", "BookName", "Genre", "OrderId", "Price" },
+                values: new object[,]
+                {
+                    { new Guid("0f24ff84-c097-4b3a-a2dc-ea77b988ef3b"), "Harry Potter and the Philosopher's Stone is a fantasy novel written by British author J. K. Rowling. The first novel in the Harry Potter series and Rowling's debut novel, it follows Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry. Harry makes close friends and a few enemies during his first year at the school, and with the help of his friends, Harry faces an attempted comeback by the dark wizard Lord Voldemort, who killed Harry's parents, but failed to kill Harry when he was just 15 months old.", "https://picsum.photos/200/300", "Harry Potter and the Philosopher's Stone", "Fantasy", null, 15 },
+                    { new Guid("35cbf8cc-7ded-4244-939d-204bb6a245a0"), "Life, the Universe and Everything is a science fiction comedy novel by Douglas Adams, the third in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 27 October 1982 by Pan Books, and in the United States on 1 November 1982 by Del Rey Books.", "https://picsum.photos/200/300", "Life, the Universe and Everything", "Comedy", null, 10 },
+                    { new Guid("4ab377da-596a-4a0f-9a08-b7437e7d373a"), "Frankenstein; or, The Modern Prometheus is a novel written by English author Mary Shelley that tells the story of Victor Frankenstein, a young scientist who creates a hideous sapient creature in an unorthodox scientific experiment. Shelley started writing the story when she was 18, and the novel was published when she was 20.", "https://picsum.photos/200/300", "Frankenstein", "Horror", null, 10 },
+                    { new Guid("73e27f80-2156-4f98-9f32-fa4912ddb2c0"), "The Hobbit, or There and Back Again is a children's fantasy novel by English author J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature.", "https://picsum.photos/200/300", "The Hobbit", "Fantasy", null, 10 },
+                    { new Guid("8573ee61-1002-4e62-aa68-3dd1edbbc596"), "The Little Prince is a novella, the most famous work of French aristocrat, writer, poet, and pioneering aviator Antoine de Saint-Exupéry.", "https://picsum.photos/200/300", "The Little Prince", "Fantasy", null, 5 },
+                    { new Guid("87b9f6c4-60ba-45c5-a940-825073f72072"), "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien. The story began as a sequel to Tolkien's 1937 fantasy novel The Hobbit, but eventually developed into a much larger work. Written in stages between 1937 and 1949, The Lord of the Rings is one of the best-selling novels ever written, with over 150 million copies sold.", "https://picsum.photos/200/300", "The Lord of the Rings", "Fantasy", null, 20 },
+                    { new Guid("a626389d-8e37-4ac6-bf7b-fd4e312e3211"), "Dracula is an 1897 Gothic horror novel by Irish author Bram Stoker. Famous for introducing the character of the vampire Count Dracula, the novel tells the story of Dracula's attempt to move from Transylvania to England so that he may find new blood and spread the undead curse, and of the battle between Dracula and a small volverine", "https://picsum.photos/200/300", "Dracula", "Horror", null, 10 },
+                    { new Guid("db3670e7-63be-4936-bd0c-665b709de1f2"), "The Hitchhiker's Guide to the Galaxy is a comedy science fiction series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon.", "https://picsum.photos/200/300", "The Hitchhiker's Guide to the Galaxy", "Comedy", null, 10 },
+                    { new Guid("f638a22c-fb26-4ab7-b399-a92fd795eddc"), "The Restaurant at the End of the Universe is a science fiction comedy novel by Douglas Adams, the second in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 1 October 1980 by Pan Books, and in the United States on 1 November 1980 by Del Rey Books.", "https://picsum.photos/200/300", "The Restaurant at the End of the Universe", "Comedy", null, 10 },
+                    { new Guid("fc10b3e7-a841-4d20-826e-3aa96f79fbe4"), "The Picture of Dorian Gray is a philosophical novel by Oscar Wilde, first published complete in the July 1890 issue of Lippincott's Monthly Magazine. Fearing the story was indecent, the magazine's editor deleted roughly five hundred words before publication. The work's initial reception was mixed, with some reviewers praising its literary merits and others condemning the story's immoral content.", "https://picsum.photos/200/300", "The Picture of Dorian Gray", "Horror", null, 10 }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "5fc9fc47-01a5-47c9-8509-64f9973e8af6", "edb3b8f2-d34d-4c95-92af-2690f79cd841" });
+                values: new object[] { "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f", "623236cc-5736-4fad-b863-d333d8bd3774" });
 
             migrationBuilder.InsertData(
                 table: "ShoppingCarts",
                 columns: new[] { "Id", "OwnerId" },
-                values: new object[] { new Guid("248092de-f108-47ad-bced-05fac6eb3a11"), "edb3b8f2-d34d-4c95-92af-2690f79cd841" });
+                values: new object[] { new Guid("18228e68-0602-42e3-9e6d-0e23936cb4dd"), "623236cc-5736-4fad-b863-d333d8bd3774" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -360,11 +369,6 @@ namespace BookStore.Repository.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookInShoppingCarts_BookId",
-                table: "BookInShoppingCarts",
-                column: "BookId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BookInShoppingCarts_ShoppingCartId",
                 table: "BookInShoppingCarts",
                 column: "ShoppingCartId");
@@ -373,11 +377,6 @@ namespace BookStore.Repository.Migrations
                 name: "IX_Books_OrderId",
                 table: "Books",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_ShoppingCartId",
-                table: "Books",
-                column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -424,10 +423,10 @@ namespace BookStore.Repository.Migrations
                 name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "ShoppingCarts");
 
             migrationBuilder.DropTable(
-                name: "ShoppingCarts");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

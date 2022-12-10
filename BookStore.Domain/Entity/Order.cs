@@ -6,6 +6,6 @@ namespace BookStore.Domain.Entity
     {
         public string UserId { get; set; }
         public EShopAppUser User { get; set; }
-        public virtual ICollection<Book>? Books { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

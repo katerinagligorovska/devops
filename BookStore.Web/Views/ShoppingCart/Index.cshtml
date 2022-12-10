@@ -9,8 +9,8 @@
 
 <div class="container">
     @{
-        var TotalPrice = Model.Books.Sum(b => b.Price);
-        var BookCounts = Model.Books.GroupBy(b => b.Id).Select(b =>  new { BookId = b.Key, Count = b.Count() }).ToList();
+         var TotalPrice = Model.BookInShoppingCarts.Sum(b => b.CurrentBook.Price*b.Quantity);
+        
     }
 
     <div class="row m-4">
@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Books.Count == 0)
+                @if (Model.BookInShoppingCarts.Count == 0)
                 {
                     <tr>
                         <td colspan="5">No active Products</td>
@@ -51,18 +51,20 @@
                 }
                 else
                 {
-                    @for (int i = 0; i < BookCounts.Count; i++)
+                    @foreach(var book in Model.BookInShoppingCarts)
                     {
-                        var bookCount = BookCounts.ElementAt(i);
-                        var item = Model.Books.First(b => b.Id == bookCount.BookId);
                         <tr>
-                            <th scope="row">@(i + 1)</th>
-                            <td>@item.BookName</td>
-                            <td>@bookCount.Count</td>
-                            <td>$@item.Price</td>
-                            <td><a asp-controller="ShoppingCart" asp-action="DeleteFromShoppingCart" asp-route-id="@item.Id" class="btn btn-danger">Delete From ShoppingCart</a></td>
+                            <th scope="row">@book.CurrentBook.Id</th>
+                            <td>@book.CurrentBook.BookName</td>
+                            <td>@book.Quantity</td>
+                            <td>@book.CurrentBook.Price</td>
+                            <td>
+                                <a asp-controller="ShoppingCart" asp-action="DeleteFromShoppingCart" asp-route-id="@book.CurrentBook.Id">Remove</a>
+                            </td>
                         </tr>
                     }
+             
+                    
                 }
             </tbody>
             <tfoot class="thead-dark">

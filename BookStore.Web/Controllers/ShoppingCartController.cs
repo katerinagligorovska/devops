@@ -1,5 +1,4 @@
-﻿using BookStore.Domain.Entity;
-using BookStore.Service.Interface;
+﻿using BookStore.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using System.Security.Claims;
@@ -20,7 +19,6 @@ namespace BookStore.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var shoppingCart = this._shoppingCartService.GetShoppingCartInfo(userId);
-            shoppingCart.Books ??= new List<Book>();
             return View(shoppingCart);
         }
 
@@ -33,11 +31,11 @@ namespace BookStore.Web.Controllers
 
             if (result)
             {
-                return RedirectToAction("Index", "ShoppingCard");
+                return RedirectToAction("Index", "ShoppingCart");
             }
             else
             {
-                return RedirectToAction("Index", "ShoppingCard");
+                return RedirectToAction("Index", "ShoppingCart");
             }
         }
 
@@ -61,7 +59,7 @@ namespace BookStore.Web.Controllers
                 Email = stripeEmail,
                 Source = stripeToken
             });
-            var total = order.Books.Sum(x => x.Price);
+            var total = order.BookInShoppingCarts.Sum(x => x.CurrentBook.Price * x.Quantity);
             var charge = chargeService.Create(new ChargeCreateOptions
             {
                 Amount = total,
@@ -76,15 +74,15 @@ namespace BookStore.Web.Controllers
 
                 if (result)
                 {
-                    return RedirectToAction("Index", "ShoppingCard");
+                    return RedirectToAction("Index", "ShoppingCart");
                 }
                 else
                 {
-                    return RedirectToAction("Index", "ShoppingCard");
+                    return RedirectToAction("Index", "ShoppingCart");
                 }
             }
 
-            return RedirectToAction("Index", "ShoppingCard");
+            return RedirectToAction("Index", "ShoppingCart");
         }
     }
 }

@@ -26,6 +26,8 @@ namespace BookStore.Repository.Implementation
         {
             return entities
                .Include(z => z.Cart)
+               .Include("Cart.BookInShoppingCarts")
+               .Include("Cart.BookInShoppingCarts.CurrentBook")
                .Single(s => s.Id == id);
         }
         public void Insert(

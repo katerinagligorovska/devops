@@ -22,6 +22,8 @@ public class ApplicationDbContext : IdentityDbContext<EShopAppUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Entity<BookInShoppingCart>()
+            .HasKey(z => new { z.BookId, z.ShoppingCartId });
 
         var adminRole = new IdentityRole
         {
