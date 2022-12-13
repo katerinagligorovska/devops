@@ -19,20 +19,20 @@ namespace BookStore.Service.Implementation
             this.userManager = userManager;
         }
 
-        public IEnumerable<Order> GetAllUserOrders(string userId)
+        public List<Order> GetAllUserOrders(string userId)
         {
             var loggedInUser = this._userRepository.Get(userId);
             var roles = userManager.GetRolesAsync(loggedInUser);
             if (roles.Result.Contains(RoleName.Admin))
             {
-                return this._orderRepository.GetAll();
+                return this._orderRepository.GetAllOrders();
             }
             return this._orderRepository.GetAllOrdersForUser(userId);
         }
 
-        public Order GetOrderDetails(Guid model)
+        public Order GetOrderDetails(Guid orderId)
         {
-            return this._orderRepository.Get(model);
+            return this._orderRepository.GetOrderDetails(orderId);
         }
     }
 }
