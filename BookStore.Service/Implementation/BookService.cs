@@ -19,6 +19,10 @@ namespace BookStore.Service.Implementation
             _userRepository = userRepository;
             _shoppingCartRepository = shoppingCartRepository;
         }
+        public BookService(IRepository<Book> bookrepo)
+        {
+            _bookRepository = bookrepo;
+        }
 
 
         public bool AddToShoppingCart(AddToShoppingCartDto item, string userID)
