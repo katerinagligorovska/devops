@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace BookStore.Repository.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,6 +49,22 @@ namespace BookStore.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BookName = table.Column<string>(type: "text", nullable: false),
+                    BookImage = table.Column<string>(type: "text", nullable: false),
+                    BookDescription = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    Genre = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,28 +225,6 @@ namespace BookStore.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Books",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    BookName = table.Column<string>(type: "text", nullable: false),
-                    BookImage = table.Column<string>(type: "text", nullable: false),
-                    BookDescription = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<int>(type: "integer", nullable: false),
-                    Genre = table.Column<string>(type: "text", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Books", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Books_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BookInOrder",
                 columns: table => new
                 {
@@ -285,41 +280,41 @@ namespace BookStore.Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f", "d9612bef-91fc-4a41-8f87-574b65e3897f", "Admin", "ADMIN" },
-                    { "d603372b-0cb7-4cf6-aab8-00de031e80c3", "a3e8cdd3-aac4-4edf-bb94-8e7dbfe8bfad", "User", "USER" }
+                    { "a88bf495-0c51-4c55-84d5-d6370f185a96", "17979143-00ba-4a04-aae0-56a870cf5057", "Admin", "ADMIN" },
+                    { "c1c5bc26-2f19-4d9c-831d-d71dc348878b", "94f1af5e-d4ad-437e-ad77-1c21625df696", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "623236cc-5736-4fad-b863-d333d8bd3774", 0, "f8971a1a-49a1-4016-a07e-42c961369656", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEGgmvdRlwQGHXWFhrfeIxGDfMYHy/HW6oxZZfr/f7qmiBtFOOGQDBapYJFXYRA+dxQ==", null, false, "b9fb7024-ee1d-4275-8c62-e44f61d29d1d", false, "admin@test.com" });
+                values: new object[] { "530dc134-9409-4c43-b771-37d1808f5aba", 0, "6620af8b-9bff-48fa-87a6-c3850155421c", "admin@test.com", true, "Admin", "Admin", false, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEAhiXeC2iRjiBZYw+AkexhciPU74iil/0QmNPkP51W0rwtbp18ouy98LotLFtqfW/g==", null, false, "20d6c1a0-8c1d-4da7-81fa-9020f2b7c1ce", false, "admin@test.com" });
 
             migrationBuilder.InsertData(
                 table: "Books",
-                columns: new[] { "Id", "BookDescription", "BookImage", "BookName", "Genre", "OrderId", "Price" },
+                columns: new[] { "Id", "BookDescription", "BookImage", "BookName", "Genre", "Price" },
                 values: new object[,]
                 {
-                    { new Guid("0f24ff84-c097-4b3a-a2dc-ea77b988ef3b"), "Harry Potter and the Philosopher's Stone is a fantasy novel written by British author J. K. Rowling. The first novel in the Harry Potter series and Rowling's debut novel, it follows Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry. Harry makes close friends and a few enemies during his first year at the school, and with the help of his friends, Harry faces an attempted comeback by the dark wizard Lord Voldemort, who killed Harry's parents, but failed to kill Harry when he was just 15 months old.", "https://picsum.photos/200/300", "Harry Potter and the Philosopher's Stone", "Fantasy", null, 15 },
-                    { new Guid("35cbf8cc-7ded-4244-939d-204bb6a245a0"), "Life, the Universe and Everything is a science fiction comedy novel by Douglas Adams, the third in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 27 October 1982 by Pan Books, and in the United States on 1 November 1982 by Del Rey Books.", "https://picsum.photos/200/300", "Life, the Universe and Everything", "Comedy", null, 10 },
-                    { new Guid("4ab377da-596a-4a0f-9a08-b7437e7d373a"), "Frankenstein; or, The Modern Prometheus is a novel written by English author Mary Shelley that tells the story of Victor Frankenstein, a young scientist who creates a hideous sapient creature in an unorthodox scientific experiment. Shelley started writing the story when she was 18, and the novel was published when she was 20.", "https://picsum.photos/200/300", "Frankenstein", "Horror", null, 10 },
-                    { new Guid("73e27f80-2156-4f98-9f32-fa4912ddb2c0"), "The Hobbit, or There and Back Again is a children's fantasy novel by English author J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature.", "https://picsum.photos/200/300", "The Hobbit", "Fantasy", null, 10 },
-                    { new Guid("8573ee61-1002-4e62-aa68-3dd1edbbc596"), "The Little Prince is a novella, the most famous work of French aristocrat, writer, poet, and pioneering aviator Antoine de Saint-Exupéry.", "https://picsum.photos/200/300", "The Little Prince", "Fantasy", null, 5 },
-                    { new Guid("87b9f6c4-60ba-45c5-a940-825073f72072"), "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien. The story began as a sequel to Tolkien's 1937 fantasy novel The Hobbit, but eventually developed into a much larger work. Written in stages between 1937 and 1949, The Lord of the Rings is one of the best-selling novels ever written, with over 150 million copies sold.", "https://picsum.photos/200/300", "The Lord of the Rings", "Fantasy", null, 20 },
-                    { new Guid("a626389d-8e37-4ac6-bf7b-fd4e312e3211"), "Dracula is an 1897 Gothic horror novel by Irish author Bram Stoker. Famous for introducing the character of the vampire Count Dracula, the novel tells the story of Dracula's attempt to move from Transylvania to England so that he may find new blood and spread the undead curse, and of the battle between Dracula and a small volverine", "https://picsum.photos/200/300", "Dracula", "Horror", null, 10 },
-                    { new Guid("db3670e7-63be-4936-bd0c-665b709de1f2"), "The Hitchhiker's Guide to the Galaxy is a comedy science fiction series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon.", "https://picsum.photos/200/300", "The Hitchhiker's Guide to the Galaxy", "Comedy", null, 10 },
-                    { new Guid("f638a22c-fb26-4ab7-b399-a92fd795eddc"), "The Restaurant at the End of the Universe is a science fiction comedy novel by Douglas Adams, the second in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 1 October 1980 by Pan Books, and in the United States on 1 November 1980 by Del Rey Books.", "https://picsum.photos/200/300", "The Restaurant at the End of the Universe", "Comedy", null, 10 },
-                    { new Guid("fc10b3e7-a841-4d20-826e-3aa96f79fbe4"), "The Picture of Dorian Gray is a philosophical novel by Oscar Wilde, first published complete in the July 1890 issue of Lippincott's Monthly Magazine. Fearing the story was indecent, the magazine's editor deleted roughly five hundred words before publication. The work's initial reception was mixed, with some reviewers praising its literary merits and others condemning the story's immoral content.", "https://picsum.photos/200/300", "The Picture of Dorian Gray", "Horror", null, 10 }
+                    { new Guid("030ec5a3-e8f7-4558-bef9-b149bf5622b6"), "The Picture of Dorian Gray is a philosophical novel by Oscar Wilde, first published complete in the July 1890 issue of Lippincott's Monthly Magazine. Fearing the story was indecent, the magazine's editor deleted roughly five hundred words before publication. The work's initial reception was mixed, with some reviewers praising its literary merits and others condemning the story's immoral content.", "https://picsum.photos/200/300", "The Picture of Dorian Gray", "Horror", 10 },
+                    { new Guid("12921473-9550-415f-b9e5-7634741a7788"), "Dracula is an 1897 Gothic horror novel by Irish author Bram Stoker. Famous for introducing the character of the vampire Count Dracula, the novel tells the story of Dracula's attempt to move from Transylvania to England so that he may find new blood and spread the undead curse, and of the battle between Dracula and a small volverine", "https://picsum.photos/200/300", "Dracula", "Horror", 10 },
+                    { new Guid("45acefbf-1fcc-4be9-bca0-3bfb00a8f061"), "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien. The story began as a sequel to Tolkien's 1937 fantasy novel The Hobbit, but eventually developed into a much larger work. Written in stages between 1937 and 1949, The Lord of the Rings is one of the best-selling novels ever written, with over 150 million copies sold.", "https://picsum.photos/200/300", "The Lord of the Rings", "Fantasy", 20 },
+                    { new Guid("4edf474b-3c9c-44d9-8648-ee834388ebb3"), "Frankenstein; or, The Modern Prometheus is a novel written by English author Mary Shelley that tells the story of Victor Frankenstein, a young scientist who creates a hideous sapient creature in an unorthodox scientific experiment. Shelley started writing the story when she was 18, and the novel was published when she was 20.", "https://picsum.photos/200/300", "Frankenstein", "Horror", 10 },
+                    { new Guid("88c63aac-5428-4bcd-9967-f09c0d854e39"), "Life, the Universe and Everything is a science fiction comedy novel by Douglas Adams, the third in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 27 October 1982 by Pan Books, and in the United States on 1 November 1982 by Del Rey Books.", "https://picsum.photos/200/300", "Life, the Universe and Everything", "Comedy", 10 },
+                    { new Guid("9d169535-2f1c-48de-be2d-d3bf50b24bc7"), "The Hitchhiker's Guide to the Galaxy is a comedy science fiction series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon.", "https://picsum.photos/200/300", "The Hitchhiker's Guide to the Galaxy", "Comedy", 10 },
+                    { new Guid("ace12fa8-93e1-4133-891e-751739b07874"), "The Restaurant at the End of the Universe is a science fiction comedy novel by Douglas Adams, the second in the Hitchhiker's Guide to the Galaxy series. It was first published in the United Kingdom on 1 October 1980 by Pan Books, and in the United States on 1 November 1980 by Del Rey Books.", "https://picsum.photos/200/300", "The Restaurant at the End of the Universe", "Comedy", 10 },
+                    { new Guid("adbd9abe-54fc-43cd-8cdc-64b153119f8d"), "The Hobbit, or There and Back Again is a children's fantasy novel by English author J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature.", "https://picsum.photos/200/300", "The Hobbit", "Fantasy", 10 },
+                    { new Guid("b5049da6-ab71-4599-b7fa-6f43301dbad0"), "Harry Potter and the Philosopher's Stone is a fantasy novel written by British author J. K. Rowling. The first novel in the Harry Potter series and Rowling's debut novel, it follows Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry. Harry makes close friends and a few enemies during his first year at the school, and with the help of his friends, Harry faces an attempted comeback by the dark wizard Lord Voldemort, who killed Harry's parents, but failed to kill Harry when he was just 15 months old.", "https://picsum.photos/200/300", "Harry Potter and the Philosopher's Stone", "Fantasy", 15 },
+                    { new Guid("c88730e0-365e-4fd4-b472-eea69292d3a3"), "The Little Prince is a novella, the most famous work of French aristocrat, writer, poet, and pioneering aviator Antoine de Saint-Exupéry.", "https://picsum.photos/200/300", "The Little Prince", "Fantasy", 5 }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "0aaa3b9a-83cd-4b0c-a8d1-0efbf0b9b79f", "623236cc-5736-4fad-b863-d333d8bd3774" });
+                values: new object[] { "a88bf495-0c51-4c55-84d5-d6370f185a96", "530dc134-9409-4c43-b771-37d1808f5aba" });
 
             migrationBuilder.InsertData(
                 table: "ShoppingCarts",
                 columns: new[] { "Id", "OwnerId" },
-                values: new object[] { new Guid("18228e68-0602-42e3-9e6d-0e23936cb4dd"), "623236cc-5736-4fad-b863-d333d8bd3774" });
+                values: new object[] { new Guid("10d29e1b-1168-4b46-ae7e-7468eb1156a5"), "530dc134-9409-4c43-b771-37d1808f5aba" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -374,11 +369,6 @@ namespace BookStore.Repository.Migrations
                 column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_OrderId",
-                table: "Books",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -420,13 +410,13 @@ namespace BookStore.Repository.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Books");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCarts");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -52,16 +52,16 @@ namespace BookStore.Web.Controllers
                 var order = orders.ElementAt(i);
                 worksheet.Cell(i + 1, 1).Value = order.Id.ToString();
                 worksheet.Cell(i + 1, 2).Value = order.User.Email;
-                if (order.Books == null)
+                if (order.BooksInOrder == null)
                 {
                     continue;
                 }
 
-                for (int j = 0; j < order.Books.Count; j++)
+                for (int j = 0; j < order.BooksInOrder.Count; j++)
                 {
-                    var book = order.Books.ElementAt(j);
+                    var book = order.BooksInOrder.ElementAt(j);
                     worksheet.Cell(1, j + 3).Value = "Book - " + (j + 1);
-                    worksheet.Cell(i + 1, j + 3).Value = book.BookName;
+                    worksheet.Cell(i + 1, j + 3).Value = book.Book.BookName;
                 }
             }
 
@@ -82,19 +82,15 @@ namespace BookStore.Web.Controllers
 
             var sb = new StringBuilder();
             var totalPrice = 0.0;
-            if (result.Books != null)
+            if (result.BooksInOrder != null)
             {
-                var bookCounts = result.Books.GroupBy(x => x.Id).Select(x => new { BookId = x.Key, Count = x.Count() });
-                foreach (var item in bookCounts)
+                foreach (var item in result.BooksInOrder)
                 {
-                    var book = result.Books.First(x => x.Id == item.BookId);
-                    sb.Append($"{book.BookName} - {item.Count} - {book.Price}$");
+                    sb.Append($"{item.Book.BookName} - {item.Quantity} - {item.Book.Price}$");
                     sb.Append(Environment.NewLine);
-                    totalPrice += book.Price * item.Count;
+                    totalPrice += item.Book.Price * item.Quantity;
                 }
             }
-
-            document.Content.Replace("{{BookList}}", sb.ToString());
             document.Content.Replace("{{TotalPrice}}", totalPrice.ToString() + "$");
 
             using var stream = new MemoryStream();

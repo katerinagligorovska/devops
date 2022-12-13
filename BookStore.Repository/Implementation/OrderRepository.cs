@@ -17,14 +17,14 @@ namespace BookStore.Repository.Implementation
         {
             return entities
                 .Include(z => z.User)
-                .Include(z => z.Books)
+                .Include(z => z.BooksInOrder)
                 .ToList();
         }
         public List<Order> GetAllOrdersForUser(string userId)
         {
             return entities
                 .Include(z => z.User)
-                .Include(z => z.Books)
+                .Include(z => z.BooksInOrder)
                 .Where(p => p.UserId == userId)
                 .ToList();
         }
@@ -33,7 +33,7 @@ namespace BookStore.Repository.Implementation
         {
             return entities
                .Include(z => z.UserId)
-               .Include(z => z.Books)
+               .Include(z => z.BooksInOrder)
                .Single(z => z.Id == model.Id);
         }
     }
