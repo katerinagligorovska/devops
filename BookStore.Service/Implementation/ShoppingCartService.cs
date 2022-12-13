@@ -1,4 +1,5 @@
 ﻿using BookStore.Domain.Entity;
+using BookStore.Domain.Relations;
 using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
 using System.Text;
@@ -63,16 +64,19 @@ namespace BookStore.Service.Implementation
             var userCart = loggedInUser.Cart;
             var order = new Order
             {
-                Id = Guid.NewGuid(),
-                User = loggedInUser,
-                UserId = userId,
-                Books = new List<Book>()
+                UserId = loggedInUser.Id,
+                BooksInOrder = new List<BookInOrder>()
             };
             foreach (var book in userCart.BookInShoppingCarts)
             {
-                order.Books.Add(book.CurrentBook);
+                var bookInOrder = new BookInOrder
+                {
+                    BookId = book.CurrentBook.Id,
+                    Book = book.CurrentBook,
+                    Quantity = book.Quantity,
+                };
+                order.BooksInOrder.Add(bookInOrder);
             }
-
 
             this._orderRepository.Insert(order);
             loggedInUser.Cart.BookInShoppingCarts.Clear();
@@ -81,16 +85,16 @@ namespace BookStore.Service.Implementation
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Your order is completed. The order conatins: ");
 
-            var booksCounts = order.Books.GroupBy(x => x.Id).Select(x => new { BookId = x.Key, Count = x.Count() });
+            var booksCounts = order.BooksInOrder.GroupBy(x => x.Id).Select(x => new { BookId = x.Key, Count = x.Count() });
             for (int i = 0; i < booksCounts.Count(); i++)
             {
                 var element = booksCounts.ElementAt(i);
                 var bookId = element.BookId;
-                var book = order.Books.Where(x => x.Id.Equals(bookId)).First();
-                sb.AppendLine($"{i}. {element.Count} x {book.BookName} - {book.Price} $");
+                var bookInOrder = order.BooksInOrder.Where(x => x.Id.Equals(bookId)).First();
+                sb.AppendLine($"{i}. {element.Count} x {bookInOrder.Book.Id} - {bookInOrder.Book.Price} $");
             }
 
-            var total = order.Books.Aggregate(0.0, (acc, book) => acc + (book.Price));
+            var total = order.BooksInOrder.Aggregate(0.0, (acc, book) => acc + (book.Book.Price));
             sb.AppendLine($"Total price for your order: {total}");
 
             var mail = new EmailMessage();

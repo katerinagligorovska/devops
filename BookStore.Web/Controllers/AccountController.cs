@@ -155,16 +155,13 @@ public class AccountController : Controller
     public async Task<IActionResult> ManageUserRoles(AddUserToRolePostViewModel model)
     {
         var user = userService.GetUserById(model.UserId);
-        var role = await roleManager.FindByIdAsync(model.RoleId.ToString());
+        var role = await roleManager.FindByIdAsync(model.RoleId);
         var result = await userManager.AddToRoleAsync(user, role.Name);
-        if (!result.Succeeded)
+        if (result.Succeeded) return RedirectToAction("UserList", "Account");
+        foreach (var error in result.Errors)
         {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return View(model);
+            ModelState.AddModelError(string.Empty, error.Description);
         }
-        return RedirectToAction("UserList", "Account");
+        return View(model);
     }
 }

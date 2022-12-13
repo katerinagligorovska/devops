@@ -26,12 +26,11 @@ namespace BookStore.Repository.Implementation
         {
             return entities
                .Include(z => z.Cart)
-               .Include("Cart.BookInShoppingCarts")
-               .Include("Cart.BookInShoppingCarts.CurrentBook")
+               .ThenInclude(c => c.BookInShoppingCarts)
+               .ThenInclude(b => b.CurrentBook)
                .Single(s => s.Id == id);
         }
-        public void Insert(
-            EShopAppUser entity)
+        public void Insert(EShopAppUser entity)
         {
             if (entity == null)
             {
