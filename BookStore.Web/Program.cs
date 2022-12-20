@@ -6,6 +6,7 @@ using BookStore.Repository.Interface;
 using BookStore.Service.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,13 +51,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseMetricServer();
+app.UseHttpMetrics();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.UseEndpoints(endpoints =>
 {
+    
+    endpoints.MapMetrics();
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
