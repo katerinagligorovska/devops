@@ -40,7 +40,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      DSN: User ID=postgres;Password=changeme;Host=db;Port=5432;Database=bookstoredb;Pooling=true;
+      DSN: Server=bookstoredb.cgid0m8qlg2j.eu-central-1.rds.amazonaws.com;Port=5432;Username=postgres;Password=changeme;Database=bookstoredb;
     networks:
       - postgres
 
