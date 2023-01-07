@@ -1,0 +1,4 @@
+replicas: 2
+image: katerinagligorovska/bookstoreapp:latest
+imagePullPolicy: Always
+containerPort: 80

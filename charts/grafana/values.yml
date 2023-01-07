@@ -1,0 +1,4 @@
+replicas: 2
+image: grafana/grafana
+imagePullPolicy: Always
+containerPort: 3000

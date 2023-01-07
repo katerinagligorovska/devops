@@ -1,0 +1,4 @@
+replicas: 2
+image: prom/prometheus
+imagePullPolicy: Always
+containerPort: 9090
