@@ -18,5 +18,16 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        env:
+        - name: DB_HOST
+          value: "bookstoredb.cgid0m8qlg2j.eu-central-1.rds.amazonaws.com"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USERNAME
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "changeme"
+        - name: DB_NAME
+          value: "bookstoredb"
 
 
