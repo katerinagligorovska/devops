@@ -35,7 +35,7 @@
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
+                   
                     <th scope="col">Book Name</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Book Price</th>
@@ -54,7 +54,7 @@
                     @foreach(var book in Model.BookInShoppingCarts)
                     {
                         <tr>
-                            <th scope="row">@book.CurrentBook.Id</th>
+                           
                             <td>@book.CurrentBook.BookName</td>
                             <td>@book.Quantity</td>
                             <td>@book.CurrentBook.Price</td>
@@ -70,7 +70,6 @@
             <tfoot class="thead-dark">
                 <tr>
                     <th scope="col">TotalPrice:</th>
-                    <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col">$@TotalPrice</th>
