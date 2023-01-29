@@ -1,0 +1,10 @@
+replicas: 2
+image: katerinagligorovska/bookstoreapp:latest
+imagePullPolicy: Always
+secretName: mysecret
+dbConnStr: U2VydmVyPW1lbC5kYi5lbGVwaGFudHNxbC5jb207UG9ydD01NDMyO1VzZXJuYW1lPWNnY3Jldnp5O1Bhc3N3b3JkPW9TTVdVVngwOXRpVVdqeUZaTkRxdmJ4VlU3ZDdMNEFMO0RhdGFiYXNlPWNnY3Jldnp5Ow==
+podPortName: pod-port
+
+
+
+

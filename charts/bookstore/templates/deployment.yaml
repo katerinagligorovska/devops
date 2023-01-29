@@ -17,4 +17,11 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPort }}
+        - containerPort: 80
+          name: {{ .Values.podPortName }}
+        env:
+        - name: DSN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secretName }}
+              key: dbConnStr
