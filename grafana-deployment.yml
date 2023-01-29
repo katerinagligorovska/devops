@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: grafana
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: grafana
@@ -18,3 +18,39 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
+          name: grafana-pod
+        env:
+        - name: grafana-username
+          valueFrom: 
+            secretKeyRef:
+              name: grafanasecret
+              key: grafana-username
+        - name: grafana-password
+          valueFrom: 
+            secretKeyRef:
+              name: grafanasecret
+              key: grafana-password
+        volumeMounts:
+          - name: config
+            mountPath: /etc/grafana/
+      volumes:
+      - name: config
+        configMap:
+          name: grafana-config
+      serviceAccountName: prometheus
+
+      
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: grafana-pod
+    protocol: TCP
+  selector:
+    app: grafana

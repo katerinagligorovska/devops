@@ -18,16 +18,24 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+          name: pod-port
         env:
-        - name: DB_HOST
-          value: "bookstoredb.cgid0m8qlg2j.eu-central-1.rds.amazonaws.com"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_USERNAME
-          value: "postgres"
-        - name: DB_PASSWORD
-          value: "changeme"
-        - name: DB_NAME
-          value: "bookstoredb"
-
-
+        - name: DSN
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: dbConnStr
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-store-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: book-store
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: pod-port

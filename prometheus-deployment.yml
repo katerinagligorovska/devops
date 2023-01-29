@@ -18,4 +18,29 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 9090
+          name: prometheus-pod
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/prometheus/
+        args:
+          - "--config.file=/etc/prometheus/prometheus.yml"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: prometheus-config
+      serviceAccountName: prometheus
+
  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 9090
+    targetPort: prometheus-pod
+    protocol: TCP
+  selector:
+    app: prometheus
